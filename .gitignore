@@ -1,0 +1,16 @@
+
+/.idea
+*.egg-info
+*.pot
+*.py[co]
+__pycache__/
+MANIFEST
+dist/
+docs/_build/
+docs/locale/
+tests/coverage_html/
+tests/.coverage
+build/
+tests/report/
+static/
+uploaded_files/

@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+<p>ID나 비밀번호가 일치하지 않습니다.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>권한이 없는 페이지에 접근하였으니, 권한이 있는 계정으로 로그인하세요.</p>
+    {% else %}
+    <p>이 페이지를 보려면 로그인을 해야 합니다.</p>
+    {% endif %}
+{% endif %}
+
+
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+<div class="row">
+    <div class="center-align">
+        <span>Sign in to Nanum</span>
+        {# 폰트 설정해주기 #}
+    </div>
+    <div class="col s12">
+        <h1>
+
+
+        </h1>
+    </div>
+    <div class="col s4 offset-s4">
+        <div class="card-panel white">
+            <div class="row">
+                <div class="input-field col s12">
+                    {{ form.username }}
+                    <label for="id_username">Username</label>
+                </div>
+                <div class="input-field col s12">
+                    {{ form.password }}
+                    <td><label for="id_password">Password</label></td>
+                </div>
+                <div class="input-field col s12 center-align">
+                    <button class="btn waves-effect waves-light" type="submit" >로그인
+                        <i class="material-icons right">send</i>
+                    </button>
+                    <input type="hidden" name="next" value="{{ next }}" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <form id="signup" method="post" action="{% url 'join' %}">
+    {%  csrf_token %}
+{#        <div class="row">#}
+{#                <div class="input-field col s12">#}
+{#                    <input id="id_username" maxlength="254" name="username" type="text" />#}
+{#                    <label for="id_username">Username</label>#}
+{#                </div>#}
+{#                <div class="input-field col s12">#}
+{#                    <label for="id_password1">Password:</label>#}
+{#                    <input id="id_password1" name="password1" type="password" />#}
+{#                </div>#}
+{#                <div class="input-field col s12">#}
+{#                    <label for="id_password2">Password:</label>#}
+{#                    <input id="id_password2" name="password2" type="password" />#}
+{#                </div>#}
+{#            </div>#}
+        {{ userform.as_p }}
+    <button class="btn waves-effect waves-light" type="submit" >가입 완료
+        <i class="material-icons right">send</i>
+    </button>
+
+    </form>
+
+
+
+
+
+{%  endblock %}
