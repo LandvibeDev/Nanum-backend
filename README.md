@@ -36,13 +36,13 @@ $ pyenv activate nanum
 
 ## 배포 (Deployment)
 
->DB 서버가 실행 중이어야 한다!!! (실수 자주함)
+DB 서버가 실행 중이어야 한다!!! (실수 자주함)
 ```
 (nanum)$ python manage.py runserver --settings=nanum.settings.local
 ```
 
 
-> 모든 python manage.py [command] 사용시 뒤에 --settings=nanum.settings.local 붙혀야함
+모든 python manage.py [command] 사용시 뒤에 --settings=nanum.settings.local 붙혀야함
 ```
 예시)
 (nanum)$ python manage.py makemigrations --settings=nanum.settings.local
@@ -53,9 +53,6 @@ $ pyenv activate nanum
 $ git commit -a -m 'message'
 $ git push origin dev
 ```
-
-
-
 
 
 markdown 문법
