@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'abstract',
     'issue',
     'accounts',
+    'study',
 ]
 
 MIDDLEWARE_CLASSES = [
