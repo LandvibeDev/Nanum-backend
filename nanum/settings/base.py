@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'issue',
     'accounts',
     'study',
+    'homework',
 ]
 
 MIDDLEWARE_CLASSES = [
