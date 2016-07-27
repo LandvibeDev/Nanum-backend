@@ -1,9 +1,21 @@
 from django.db import models
+from django.utils import timezone
+
+import os
 
 from abstract.models import AbstractBoard, AbstractComment, AbstractFile
 from accounts.models import NanumUser
 from study.models import Study
 # Create your models here.
+
+
+# 파일 저장 경로 정의
+def get_attached_file_path(instance, filename):
+    return os.path.join('homework', 'attached_file', 'pk_'+str(instance.id), str(timezone.now()), filename)
+
+
+def get_submit_file_path(instance, filename):
+    return os.path.join('homework', 'submit_file', 'pk_'+str(instance.id), str(timezone.now()), filename)
 
 
 class HomeWork(AbstractBoard):
@@ -18,9 +30,15 @@ class HomeWork(AbstractBoard):
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
     end_date = models.DateTimeField(null=False, blank=False, help_text='과제 마감일')
-    finished_count = models.DateTimeField(null=False, blank=False, default=0, help_text='과제 제출한 스터디원 수')
-    user = models.ForeignKey(NanumUser, null=False, blank=False, on_delete=models.CASCADE, help_text='과제 출제자')
-    study = models.ForeignKey(Study, null=False, blank=False, on_delete=models.CASCADE, help_text='과제가 속한 스터디')
+    finished_count = models.DateTimeField(default=0, help_text='과제 제출한 스터디원 수')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='과제 출제자')
+    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='과제가 속한 스터디')
+
+    class Meta:
+        ordering = ('-pk', '-create_date', )
+
+    def __str__(self):
+        return 'homework_' + str(self.id)
 
 
 class Comment(AbstractComment):
@@ -31,8 +49,14 @@ class Comment(AbstractComment):
     create_date = models.DateTimeField(auto_now_add=True, help_text='작성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
-    user = models.ForeignKey(NanumUser, null=False, blank=False, on_delete=models.CASCADE, help_text='댓글 작성자')
-    homework = models.ForeignKey(HomeWork, null=False, blank=False, on_delete=models.CASCADE, help_text='과제')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='댓글 작성자')
+    homework = models.ForeignKey(HomeWork, null=True, blank=True, on_delete=models.CASCADE, help_text='과제')
+
+    class Meta:
+        ordering = ('-pk', 'create_date',)
+
+    def __str__(self):
+        return 'comment_' + str(self.id)
 
 
 class AttachedFIle(AbstractFile):
@@ -45,8 +69,19 @@ class AttachedFIle(AbstractFile):
     create_date = models.DateTimeField(auto_now_add=True, help_text='생성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
-    attached_file = models.FileField(null=False, blank=False, help_text='과제 첨부 파일')
-    homework = models.ForeignKey(HomeWork, null=False, blank=False, on_delete=models.CASCADE, help_text='첨부파일이 속한 과제')
+    attached_file = models.FileField(
+        null=True,
+        blank=True,
+        upload_to=get_attached_file_path,
+        help_text='과제 첨부 파일'
+    )
+    homework = models.ForeignKey(HomeWork, null=True, blank=True, on_delete=models.CASCADE, help_text='첨부파일이 속한 과제')
+
+    class Meta:
+        ordering = ('-pk', 'create_date',)
+
+    def __str__(self):
+        return 'attached_file_' + str(self.id)
 
 
 class Submit(AbstractComment):
@@ -57,10 +92,16 @@ class Submit(AbstractComment):
     create_date = models.DateTimeField(auto_now_add=True, help_text='작성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
-    feedback_count = models.IntegerField(null=False, blank=False, default=0, help_text='피드백 수')
-    user = models.ForeignKey(NanumUser, null=False, blank=False, on_delete=models.CASCADE, help_text='과제 제출자')
-    homework = models.ForeignKey(HomeWork, null=False, blank=False, on_delete=models.CASCADE, help_text='과제')
-    is_finished = models.BooleanField(null=False, blank=False, help_text='제출 완료 여부')
+    feedback_count = models.IntegerField(default=0, help_text='피드백 수')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='과제 제출자')
+    homework = models.ForeignKey(HomeWork, null=True, blank=True, on_delete=models.CASCADE, help_text='과제')
+    is_finished = models.BooleanField(default=False, help_text='제출 완료 여부')
+
+    class Meta:
+        ordering = ('-pk', 'create_date',)
+
+    def __str__(self):
+        return 'submit_' + str(self.id)
 
 
 class SubmitFile(AbstractFile):
@@ -73,8 +114,19 @@ class SubmitFile(AbstractFile):
     create_date = models.DateTimeField(auto_now_add=True, help_text='생성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
-    attached_file = models.FileField(null=False, blank=False, help_text='첨부 파일')
-    submit = models.ForeignKey(Submit, null=False, blank=False, on_delete=models.CASCADE, help_text='과제 첨부 파일 댓글')
+    attached_file = models.FileField(
+        null=True,
+        blank=True,
+        upload_to=get_submit_file_path,
+        help_text='첨부 파일'
+    )
+    submit = models.ForeignKey(Submit, null=True, blank=True, on_delete=models.CASCADE, help_text='과제 첨부 파일 댓글')
+
+    class Meta:
+        ordering = ('-pk', 'create_date',)
+
+    def __str__(self):
+        return 'submit_file_' + str(self.id)
 
 
 class Feedback(AbstractComment):
@@ -85,5 +137,11 @@ class Feedback(AbstractComment):
     create_date = models.DateTimeField(auto_now_add=True, help_text='작성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
-    user = models.ForeignKey(NanumUser, null=False, blank=False, on_delete=models.CASCADE, help_text='피드백 작성자')
-    submit = models.ForeignKey(Submit, null=False, blank=False, help_text='과제 제출 글')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='피드백 작성자')
+    submit = models.ForeignKey(Submit, null=True, blank=True, help_text='과제 제출 글')
+
+    class Meta:
+        ordering = ('-pk', 'create_date',)
+
+    def __str__(self):
+        return 'feedback_' + str(self.id)
