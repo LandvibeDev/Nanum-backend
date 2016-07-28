@@ -46,6 +46,7 @@ class Study(models.Model):
     def __str__(self):
         return 'study_' + str(self.id)
 
+
 class Member(models.Model):
     """
     스터디 멤버 정보를 담은 클래스

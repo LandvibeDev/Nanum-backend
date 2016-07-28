@@ -41,6 +41,10 @@ urlpatterns = [
     url(r'^accounts/join/$', join, name='join'),
     url(r'^accounts/delete/(?P<username>[\w]+)$', delete_account, name='delete'),
 
+
+    #study
+
+
     #issue
     url(r'^', include(issue_router.urls), name='issue'),
     url(r'^', include(comment_router.urls), name='issue-comment'),
