@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework import routers
@@ -16,15 +16,15 @@ study_router.register(r'study', StudyViewSet, base_name='study')
 member_router = nested_routers.NestedSimpleRouter(study_router, r'study', lookup='study')
 member_router.register(r'member', MemberViewSet, base_name='study-member')
 
+# /study/{pk}/notice :get, post
+# /study/{pk}/notice/{n_pk} : get, put, patch, delete
+notice_router = nested_routers.NestedSimpleRouter(study_router, r'study', lookup='study')
+notice_router.register(r'notice', NoticeViewSet, base_name='study-notice')
+
 # /study/{pk}/calender :get, post
 # /study/{pk}/calender/{c_pk} : get, put, patch, delete
 calender_router = nested_routers.NestedSimpleRouter(study_router, r'study', lookup='study')
 calender_router.register(r'calender', CalenderViewSet, base_name='study-calender')
-
-# /study/{pk}/reference :get, post
-# /study/{pk}/reference/{r_pk} : get, put, patch, delete
-reference_router = nested_routers.NestedSimpleRouter(study_router, r'study', lookup='study')
-reference_router.register(r'reference', ReferenceViewSet, base_name='study-reference')
 
 # /study/{pk}/reference :get, post
 # /study/{pk}/reference/{r_pk} : get, put, patch, delete
@@ -48,13 +48,19 @@ question_router.register(r'question', QuestionViewSet, base_name='study-question
 
 # /study/{pk}/question/{q_pk}/comment :get, post
 # /study/{pk}/question/{q_pk}/comment/{c_pk} : get, put, patch, delete
-question_comment_router = nested_routers.NestedSimpleRouter(reference_router, r'question', lookup='question')
+question_comment_router = nested_routers.NestedSimpleRouter(question_router, r'question', lookup='question')
 question_comment_router.register(r'comment', QuestionCommentViewSet, base_name='study-question-comment')
 
 # /study/{pk}/question/{q_pk}/file :get, post
 # /study/{pk}/question/{q_pk}/file/{c_pk} : get, put, patch, delete
-question_file_router = nested_routers.NestedSimpleRouter(reference_router, r'question', lookup='question')
+question_file_router = nested_routers.NestedSimpleRouter(question_router, r'question', lookup='question')
 question_file_router.register(r'file', QuestionFileViewSet, base_name='study-question-file')
 
 # like => function
 # /study/{pk}/lastests =>function
+
+urlpatterns = format_suffix_patterns([
+    # 여기 FBV의 url들을 추가
+
+
+])

@@ -4,8 +4,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework import routers
 from rest_framework_nested import routers as nested_routers
 
-from homework.views import *
 from study.urls import study_router
+from homework.views import *
+
 
 # /study/{pk}/homework :get, post
 # /study/{pk}/homework/{h_pk} : get, put, patch, delete
