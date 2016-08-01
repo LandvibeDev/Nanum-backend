@@ -90,8 +90,8 @@ DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
          'NAME': 'nanumdb',
-         'USER': 'postgres',
-         'PASSWORD': '',
+         'USER': 'nanum_admin',
+         'PASSWORD': 'landvibe!',
          'HOST': 'localhost',
          'PORT': '',
       }
