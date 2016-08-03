@@ -17,6 +17,7 @@ from django.conf.urls import url,include
 from django.contrib import admin
 from django.contrib.auth import views as account_views
 from django.conf.urls.static import static
+from django.shortcuts import redirect
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -28,7 +29,15 @@ from study.urls import urlpatterns as study_urls
 from accounts.views import join, delete_account
 from nanum.settings import base
 
+
+
 urlpatterns = [
+    url(
+        r'^$', account_views.login, name='main',
+        kwargs={
+            'template_name': 'login.html'
+        }
+    ),
 
     #admin
     url(r'^admin/', admin.site.urls),
@@ -66,6 +75,7 @@ urlpatterns = [
     url(r'^', include(comment_router.urls), name='issue-comment'),
     url(r'^', include(file_router.urls), name='issue-file'),
     url(r'^', include(issue_urls), name='issue-tags'),
+
 
 ]
 

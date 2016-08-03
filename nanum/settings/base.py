@@ -147,7 +147,7 @@ MEDIA_URL = '/upload/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '../uploaded_files') # 저장되는 장소
 
 # Accounts
-LOGIN_REDIRECT_URL = '/issues/'
+LOGIN_REDIRECT_URL = '/study/'
 
 # Sessions
 # cookies expire as soon as the user closes their browser
