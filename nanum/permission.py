@@ -1,6 +1,16 @@
+from rest_framework.permissions import BasePermission
+from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import Permission, Group
 
 # 스터디 모델 생성 되면 구현 완료할 것!
+# 권한 관련 레퍼런스
+# http://www.django-rest-framework.org/api-guide/permissions/#custom-permissions
+class sPermission(BasePermission):
+
+    def has_permission(self, request, view):
+
+        return True
+
 
 # 스터디장, 스터디 매니저, 스터디원 그룹 생성
 def create_groups(study_name, leader, manager_list=None, member_list=None):

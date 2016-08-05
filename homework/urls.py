@@ -15,17 +15,17 @@ homework_router.register(r'homework', HomeWorkViewSet, base_name='study-homework
 
 # /study/{pk}/homework/{h_pk}/comment :get, post
 # /study/{pk}/homework/{h_pk}/comment/{c_pk} : get, put, patch, delete
-comment_router = nested_routers.NestedSimpleRouter(study_router, r'homework', lookup='homework')
+comment_router = nested_routers.NestedSimpleRouter(homework_router, r'homework', lookup='homework')
 comment_router.register(r'comment', CommentViewSet, base_name='study-homework-comment')
 
 # /study/{pk}/homework/{h_pk}/file :get, post
 # /study/{pk}/homework/{h_pk}/file/{f_pk} : get, put, patch, delete
-file_router = nested_routers.NestedSimpleRouter(study_router, r'homework', lookup='homework')
+file_router = nested_routers.NestedSimpleRouter(homework_router, r'homework', lookup='homework')
 file_router.register(r'file', AttachedFIleViewSet, base_name='study-homework-file')
 
 # /study/{pk}/homework/{h_pk}/submit :get, post
 # /study/{pk}/homework/{h_pk}/submit/{s_pk} : get, put, patch, delete
-submit_router = nested_routers.NestedSimpleRouter(study_router, r'homework', lookup='homework')
+submit_router = nested_routers.NestedSimpleRouter(homework_router, r'homework', lookup='homework')
 submit_router.register(r'submit', SubmitViewSet, base_name='study-homework-submit')
 
 # /study/{pk}/homework/{h_pk}/submit/{s_pk}/file :get, post
