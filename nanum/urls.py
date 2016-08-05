@@ -24,7 +24,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from issue.urls import issue_router, comment_router, file_router
 from issue.urls import urlpatterns as issue_urls
 from study.urls import *
+from homework.urls import *
 from study.urls import urlpatterns as study_urls
+
 
 from accounts.views import join, delete_account
 from nanum.settings import base
@@ -67,8 +69,13 @@ urlpatterns = [
     url(r'^', include(question_file_router.urls), name='study-question-file'),
 
 
-    #homework url 추가할 것
-
+    #homework
+    url(r'^', include(homework_router.urls), name='homework'),
+    url(r'^', include(comment_router.urls), name='homework-comment'),
+    url(r'^', include(file_router.urls), name='homework-file'),
+    url(r'^', include(submit_router.urls), name='homework-submit'),
+    url(r'^', include(submit_file_router.urls), name='homework-submit-file'),
+    url(r'^', include(submit_feedback_router.urls), name='homework-submit-feedback'),
 
     #issue
     url(r'^', include(issue_router.urls), name='issue'),
