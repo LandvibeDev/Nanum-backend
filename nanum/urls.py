@@ -51,7 +51,7 @@ urlpatterns = [
     ),
     url(r'^accounts/logout/$', account_views.logout, name='logout'),
     url(r'^accounts/join/$', join, name='join'),
-    url(r'^accounts/delete/(?P<user_pk>[\w]+)$', delete_account, name='delete'),
+    url(r'^accounts/delete/(?P<username>[\w]+)$', delete_account, name='delete'),
     url(r'^accounts/info/(?P<user_pk>[\w]+)$', info_account, name='info'),
 
 
