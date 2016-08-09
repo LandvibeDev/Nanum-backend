@@ -29,7 +29,7 @@ def join(request, format=None):
 @permission_classes((AllowAny,))
 def delete_account(request, user_pk=None, format=None):
     if request.method == 'DELETE':
-        user = get_object_or_404(NanumUser, user_id=user_pk)
+        user = get_object_or_404(get_user_model(),user_id=user_pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
