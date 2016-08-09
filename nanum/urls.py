@@ -26,9 +26,7 @@ from issue.urls import urlpatterns as issue_urls
 from study.urls import *
 from homework.urls import *
 from study.urls import urlpatterns as study_urls
-
-
-from accounts.views import join, delete_account
+from accounts.views import join, delete_account, info_account
 from nanum.settings import base
 
 
@@ -53,7 +51,8 @@ urlpatterns = [
     ),
     url(r'^accounts/logout/$', account_views.logout, name='logout'),
     url(r'^accounts/join/$', join, name='join'),
-    url(r'^accounts/delete/(?P<username>[\w]+)$', delete_account, name='delete'),
+    url(r'^accounts/delete/(?P<user_pk>[\w]+)$', delete_account, name='delete'),
+    url(r'^accounts/info/(?P<user_pk>[\w]+)$', info_account, name='info'),
 
 
     #study
