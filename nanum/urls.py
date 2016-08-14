@@ -51,7 +51,9 @@ urlpatterns = [
     url(r'^accounts/info/(?P<user_pk>[\w]+)$', info_account, name='info'),
 
 
-    #study
+
+
+    # study
     url(r'^', include(study_router.urls), name='study'),
     url(r'^', include(member_router.urls), name='study-memeber'),
     url(r'^', include(notice_router.urls), name='study-notice'),

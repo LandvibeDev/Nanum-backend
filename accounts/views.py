@@ -48,3 +48,4 @@ def info_account(request, user_pk=None, format=None):
 def first_page(request):
     return redirect('/study/')
 
+
