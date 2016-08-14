@@ -77,7 +77,8 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-    ]
+    ],
+
 }
 
 # Database
@@ -145,6 +146,7 @@ MEDIA_URL = '/upload/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '../uploaded_files') # 저장되는 장소
 
 # Accounts
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/study/'
 
 # Sessions

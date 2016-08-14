@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -41,5 +42,10 @@ def info_account(request, user_pk=None, format=None):
         user = get_object_or_404(NanumUser, user_id=user_pk)
         serializer = NanumUserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@login_required(login_url='/accounts/login/')
+def first_page(request):
+    return redirect('/study/')
 
 
