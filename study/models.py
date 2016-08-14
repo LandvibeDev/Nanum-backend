@@ -39,6 +39,18 @@ class Study(models.Model):
     like_count = models.IntegerField(default=0, help_text='좋아요 수')
     is_active = models.BooleanField(default=True, help_text='스터디 진행여부(진행중/끝)')
     is_enrolling = models.BooleanField(default=True, help_text='스터디 모집중(참여가능/불가)')
+    likes = models.ManyToManyField(
+        NanumUser,
+        blank=True,
+        related_name='likes',
+        through='Like', # Study, NanumUser 의 중계 모델 Like
+    )
+    members = models.ManyToManyField(
+        NanumUser,
+        blank=True,
+        related_name='members',
+        through='Member', # Study, NanumUser 의 중계 모델 Member
+    )
 
     class Meta:
         ordering = ('-pk', '-start_date', )
@@ -103,12 +115,13 @@ class Calender(models.Model):
     """
     스터디 시작/종료날짜, 스터디 관련 일정 정보를 담은 클래스
     """
+    title = models.CharField(null=False, blank=False, default="제목없는 일정", max_length=200, help_text='일정 제목')
     start_date = models.DateTimeField(null=False, blank=False, help_text='일정 시작일')
     end_date = models.DateTimeField(null=False, blank=False, help_text='일정 종료일')
     description = models.TextField(null=True, blank=True, help_text='일정 설명')
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디')
-    is_oneday = models.BooleanField(null=False, blank=False, help_text='종일 일정 여부')
-    is_part_time = models.BooleanField(null=False, blank=False, help_text='시간 일정 여부')
+    is_oneday = models.BooleanField(null=False, blank=False, default=False, help_text='종일 일정 여부')
+    is_part_time = models.BooleanField(null=False, blank=False, default=False, help_text='시간 일정 여부')
 
     class Meta:
         ordering = ('-pk', '-start_date', )
@@ -117,18 +130,19 @@ class Calender(models.Model):
         return 'calender_' + str(self.id)
 
 
-class CalenderCategory(models.Model):
+class CalenderTag(models.Model):
     """
     스터디 일정에 대한 카테고리 정보를 담은 클래스
     """
     name = models.CharField(null=False, blank=False, max_length=50, help_text='일정 분류')
-    calender = models.ForeignKey(Calender, null=True, blank=True, on_delete=models.CASCADE, help_text='일정 정보')
+    # related_name 의 default 값은 '클래스명(소문자)_set', 여기서는 명시적으로 선언함
+    calender = models.ManyToManyField(Calender, related_name='calendertag_set', blank=True, help_text='일정 정보')
 
     class Meta:
-        ordering = ('-pk', 'name', )
+        ordering = ('-pk', 'name',)
 
     def __str__(self):
-        return 'category_' + str(self.id)
+        return 'calender_tag_' + str(self.id)
 
 
 class Reference(AbstractBoard):
