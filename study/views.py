@@ -70,7 +70,7 @@ class NoticeViewSet(viewsets.ModelViewSet):
         # 조회수 증가 및 적용
         instance.count += 1
         instance.save()
-        serializer = self._get_serializer(instance)
+        serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
 
