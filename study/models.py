@@ -158,7 +158,7 @@ class Reference(AbstractBoard):
     """
     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료를 업로드한 사용자')
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료와 관련된 스터디')
-    calender = models.ForeignKey(Calender, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료와 관련된 일정')
+    calender = models.ForeignKey(Calender, null=True, blank=True, help_text='참고자료와 관련된 일정')
 
     class Meta:
         ordering = ('-pk', '-create_date', )

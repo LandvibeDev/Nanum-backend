@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
+from logging import warning
 
 from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions, AllowAny
@@ -25,9 +26,6 @@ class StudyViewSet(viewsets.ModelViewSet):
     queryset = Study.objects.all()
     serializer_class = StudySerializer
 
-    # def create(self, request, *args, **kwargs):
-    #    return super.create()
-
 
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
@@ -39,34 +37,173 @@ class LikeViewSet(viewsets.ModelViewSet):
     serializer_class = LikeSerializer
 
 
+@permission_classes((AllowAny,))
 class NoticeViewSet(viewsets.ModelViewSet):
     queryset = Notice.objects.all()
     serializer_class = NoticeSerializer
+
+    def _get_serializer(self, *args, **kwargs):
+        serializer_class = NoticeCreateSerializer
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+
+    # override ModelViewSet.CreateModelMixin.create
+    def create(self, request, *args, **kwargs):
+        serializer = self._get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # override ModelViewSet.UpdateModelMixin.update
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self._get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+     # override
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # 조회수 증가 및 적용
+        instance.count += 1
+        instance.save()
+        serializer = self._get_serializer(instance)
+        return Response(serializer.data)
+
 
 @permission_classes((AllowAny,))
 class CalenderViewSet(viewsets.ModelViewSet):
     queryset = Calender.objects.all()
     serializer_class = CalenderSerializer
 
+    # GenericAPIView 에 똑같은 이름의 함수가 있다.
+    def _get_serializer(self, *args, **kwargs):
+        serializer_class = CalenderCreateSerializer
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+
+    # override ModelViewSet.CreateModelMixin.create
+    def create(self, request, *args, **kwargs):
+        serializer = self._get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # override ModelViewSet.UpdateModelMixin.update
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False) #
+        instance = self.get_object()
+        serializer = self._get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+
 @permission_classes((AllowAny,))
 class CalenderTagViewSet(viewsets.ModelViewSet):
     queryset = CalenderTag.objects.all()
     serializer_class = CalenderTagSerializer
 
+    def _get_serializer(self, *args, **kwargs):
+        serializer_class = CalenderTagCreateSerializer
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
 
+    # override ModelViewSet.CreateModelMixin.create
+    def create(self, request, *args, **kwargs):
+        # 인스턴스 생성 시 사용되는 시리얼라이저를 바꾼다.
+        serializer = self._get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # override ModelViewSet.UpdateModelMixin.update
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False) #
+        instance = self.get_object()
+        serializer = self._get_serializer(instance, data=request.data, partial=partial) #
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+
+@permission_classes((AllowAny,))
 class ReferenceViewSet(viewsets.ModelViewSet):
     queryset = Reference.objects.all()
     serializer_class = ReferenceSerializer
 
+    """
+    get_serializer 함수만 오버라이딩 할 경우 GET할때도 create전용 serializer가 반영되서
+    연관된 달력의 세부정보, 사용자, 스터디 정보에 대한 세부정보를 알 수 없다.
+    따라서 create, get_serializer 함수를 같이 오버라이딩 해줘야 한다.
+    """
+    def _get_serializer(self, *args, **kwargs):
+        # serializer_class = self.get_serializer_class()
+        serializer_class = ReferenceCreateSerializer
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
 
+    # override ModelViewSet.CreateModelMixin.create
+    def create(self, request, *args, **kwargs):
+        # warning("Reference create : " + str(request.data))
+        # warning("ReferenceSerializer : " + str(self.serializer_class.Meta.fields))
+        serializer = self._get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # warning("serializer ReferenceCreateSerializercreate : " + str(serializer.validated_data))
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        # return super(ReferenceViewSet, self).create(request, *args, **kwargs)
+
+    # override ModelViewSet.UpdateModelMixin.update
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self._get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+@permission_classes((AllowAny,))
 class ReferenceCommentViewSet(viewsets.ModelViewSet):
     queryset = ReferenceComment.objects.all()
     serializer_class = ReferenceCommentSerializer
 
 
+@permission_classes((AllowAny,))
 class ReferenceFileViewSet(viewsets.ModelViewSet):
     queryset = ReferenceFile.objects.all()
     serializer_class = ReferenceFileSerializer
+
+    # override
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # 다운로드 수 증가 및 적용
+        instance.download_count += 1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    # override
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.attached_file.delete() # 실제 file 삭제 코드
+        return super(ReferenceFileViewSet, self).destroy(request, *args, **kwargs)
+
+    # issue?! : 오버라이딩은 어떻게 하는게 효율적이고 가독성 좋은 코드가 나올까?
+    # def destroy(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     self.perform_destroy(instance)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    #
+    # def perform_destroy(self, instance):
+    #     instance.attached_file.delete() # file 삭제 코드
+    #     instance.delete()
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -101,16 +238,15 @@ def like_create(request, study_pk=None, format=None):
 
         # Like instance 생성할 때 인자로 받은 study_pk 값을 request.POST 에 추가
         request.POST.__setitem__('study', study_pk)
-        # Study instance를 불러와서 카운트+1
+        # study 좋아요  수 증가 및 적용
         study = get_object_or_404(Study, pk=study_pk)
-        study.like_count = study.like_count+1
-        # 변경 내용을 db에 반영
+        study.like_count += 1
         study.save()
         # logging.warning("study_like : " + str(study.like_count), )
         serializer = LikeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            logging.warning(request.data)
+            # logging.warning(request.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer@permission_classes((AllowAny,)).errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -120,16 +256,13 @@ def like_create(request, study_pk=None, format=None):
 @permission_classes((AllowAny,))
 def like_delete(request, study_pk=None, like_pk=None, format=None):
     if request.method == 'DELETE':
-        # Study instance를 불러와서 카운트-1
+        # study 좋아요 수 감소 및 적용
         study = get_object_or_404(Study, pk=study_pk)
-        #logging.warning("study.data : " + str(study.__str__), )
-        study.like_count = study.like_count-1
-        # 변경 내용을 db에 반영
+        study.like_count -= 1
         study.save()
 
         # 해당 like 인스턴스 삭제
         like = get_object_or_404(Like, pk=like_pk)
-        #logging.warning("like.data : " + str(like.__str__), )
         like.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
