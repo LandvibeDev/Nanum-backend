@@ -58,5 +58,5 @@ class NanumUserViewSet(viewsets.ModelViewSet):
         if pk == 'i':
             return Response(NanumUserSerializer(request.user,
                              context={'request':request}).data)
-        return super(NanumUserViewSet, self).retrieve()
+        return super(NanumUserViewSet, self).retrieve(request, pk)
 
