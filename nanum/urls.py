@@ -20,6 +20,7 @@ from django.shortcuts import redirect
 
 from rest_framework.urlpatterns import format_suffix_patterns
 import rest_framework
+from rest_framework.authtoken.views import obtain_auth_token
 
 from issue.urls import issue_router, comment_router, file_router
 from issue.urls import urlpatterns as issue_urls
@@ -37,6 +38,9 @@ urlpatterns = [
 
     # admin
     url(r'^admin/', admin.site.urls),
+
+    # before login, get token
+    url(r'^obtaion-auth-token/$', obtain_auth_token),
 
     # accounts
     url(

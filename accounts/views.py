@@ -49,3 +49,14 @@ def first_page(request):
     return redirect('/study/')
 
 
+class NanumUserViewSet(viewsets.ModelViewSet):
+    queryset = NanumUser.objects.all()
+    serializer_class = NanumUserSerializer
+
+    # override
+    def retrieve(self, request, pk=None):
+        if pk == 'i':
+            return Response(NanumUserSerializer(request.user,
+                             context={'request':request}).data)
+        return super(NanumUserViewSet, self).retrieve()
+
