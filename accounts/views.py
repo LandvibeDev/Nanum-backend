@@ -9,7 +9,8 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import *
 
 from accounts.models import NanumUser
-from accounts.serializer import NanumUserSerializer, NanumCreateUserSerializer
+from accounts.serializer import NanumUserSerializer, NanumCreateUserSerializer, UserSerializer
+
 
 
 @api_view(['POST'])
