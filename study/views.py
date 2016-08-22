@@ -19,6 +19,7 @@ from accounts.serializer import *
 #from study.models import *
 
 
+@permission_classes((AllowAny,))
 class StudyViewSet(viewsets.ModelViewSet):
     """
        ModelViewSet - list, create, retrieve, update, destroy 기능을 자동으로 지원
@@ -27,9 +28,48 @@ class StudyViewSet(viewsets.ModelViewSet):
     serializer_class = StudySerializer
 
 
+@permission_classes((AllowAny,))
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
+
+    def _get_serializer(self, *args, **kwargs):
+        serializer_class = MemberCreateSerializer
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+
+    # override ModelViewSet.CreateModelMixin.create
+    def create(self, request, *args, **kwargs):
+        # request POST 요청에 포함된 data얻는 법
+        # study 멤버 수 +1
+        study_id = request.POST.__getitem__('study')
+        study = get_object_or_404(Study, pk=study_id)
+        study.joined_user_count += 1
+        study.save()
+
+        serializer = self._get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # override ModelViewSet.UpdateModelMixin.update
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self._get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+# override
+    def destroy(self, request, *args, **kwargs):
+        # study 멤버 수 -1
+        study_id = request.POST.__getitem__('study')
+        study = get_object_or_404(Study, pk=study_id)
+        study.joined_user_count -= 1
+        study.save()
+        return super(MemberViewSet, self).destroy(request, *args, **kwargs)
 
 
 class LikeViewSet(viewsets.ModelViewSet):

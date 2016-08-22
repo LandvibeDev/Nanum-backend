@@ -35,14 +35,23 @@ class StudyGetSerializer(serializers.ModelSerializer):
         model = Study
         fields = ('id', 'title', 'topic', 'thumbnail', 'start_date', 'end_date', 'joined_user_count', 'max_user_count', 'is_active', 'is_enrolling', 'likes', 'like_count', 'members', 'likes')
 
-class MemberSerializer(serializers.ModelSerializer):
 
-    #issue = OnlyIdSerializer(read_only=True)
-    #user = NanumUserSerializer(read_only=True)
+class MemberCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ('id', 'study', 'user', 'joined_date')
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        dynamic__init__(self, *args, **kwargs)
+
+    study = StudyGetSerializer(read_only=True, fields=('id', 'title', 'topic',))
+    user = NanumUserSerializer(read_only=True)
 
     class Meta:
         model = Member
-        fields = ('study', 'user', 'joined_date')
+        fields = ('id', 'study', 'user', 'joined_date')
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -155,7 +164,9 @@ class QuestionFileSerializer(serializers.ModelSerializer):
                   'user', 'question')
 
 # 스터디 정보에서 좋아요에 대한 세부정보 참고
-class LikeInStudySerializer(serializers.ModelSerializer):
+class LikeSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        dynamic__init__(self, *args, **kwargs)
     # user = NanumUserSerializer(many=True, read_only=True)
     # user = serializers.SlugRelatedField(read_only=True, many=True, slug_field='user')
 
@@ -164,15 +175,11 @@ class LikeInStudySerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'create_date',)
 
 class StudySerializer(serializers.ModelSerializer):
-    # 여기서 멤버 시리얼라이저를 통해서 멤버 필드를 선언하면 스터디 정보 출력시 해당 모델에 대한 자세한 정보를 알 수 이싿
-    # issue 밑에서 정의된 클래스를 위에서 쓸때 어떻게 해야하는가? 그냥 내려
-    #members = MemberSerializer(read_only=True, many=True)
-    #likes = serializers.RelatedField(read_only=True, many=True)
-    #likes = LikeSerializer(many=True, read_only=True)
-    # likes = LikeInStudySerializer(read_only=True, many=True)
-
     def __init__(self, *args, **kwargs):
         dynamic__init__(self, *args, **kwargs)
+
+    # likes = LikeSerializer(many=True, read_only=True)
+    # members = MemberSerializer(many=True, read_only=True)
 
     class Meta:
         model = Study
