@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # before login, get token
-    url(r'^obtaion-auth-token/$', obtain_auth_token),
+    url(r'^obtain-auth-token/$', obtain_auth_token),
 
     # accounts
     url(
