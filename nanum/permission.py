@@ -2,6 +2,7 @@ from django.contrib.auth.models import Permission, Group
 
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 from study.models import *
 
@@ -11,7 +12,7 @@ from study.models import *
 # http://www.django-rest-framework.org/api-guide/permissions/#custom-permissions
 
 # TODO 테스트 필요
-class WriterPermission(BasePermission):
+class IsOwnerOrReadOnly(BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.
     """
@@ -22,6 +23,7 @@ class WriterPermission(BasePermission):
             return True
 
         return obj.user == request.user
+
 
 # # TODO 테스트 필요
 # class StudyMemeberPermission(BasePermission):
