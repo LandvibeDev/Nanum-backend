@@ -54,37 +54,34 @@ urlpatterns = [
     url(r'^accounts/delete/(?P<username>[\w]+)$', delete_account, name='delete'),
     url(r'^accounts/info/(?P<user_pk>[\w]+)$', info_account, name='info'),
 
-
-
-
     # study
     url(r'^', include(study_router.urls), name='study'),
-    url(r'^', include(member_router.urls), name='study-memeber'),
-    url(r'^', include(notice_router.urls), name='study-notice'),
-    url(r'^', include(calender_router.urls), name='study-calender'),
-    url(r'^', include(calendertag_router.urls), name='study-calendertag'),
+    url(r'^', include(member_router.urls), name='study-member'),
+    url(r'^', include(board_router.urls), name='study-board'),
+    url(r'^', include(basic_board_router.urls), name='study-board-basic_board'),
+    url(r'^', include(basic_board_comment_router.urls), name='study-board-basic_board-comment'),
+    url(r'^', include(basic_board_file_router.urls), name='study-board-basic_board-file'),
+    url(r'^', include(calender_router.urls), name='study-board-calender'),
+    url(r'^', include(calender_tag_router.urls), name='study-board-calender_tag'),
     url(r'^', include(reference_router.urls), name='study-reference'),
-    url(r'^', include(reference_comment_router.urls), name='study-reference-commnet'),
     url(r'^', include(reference_file_router.urls), name='study-reference-file'),
-    url(r'^', include(question_router.urls), name='study-question'),
-    url(r'^', include(question_comment_router.urls), name='study-question-comment'),
-    url(r'^', include(question_file_router.urls), name='study-question-file'),
+    url(r'^', include(verification_router.urls), name='study-board-verification'),
+    url(r'^', include(verification_file_router.urls), name='study-board-verification-file'),
     url(r'^', include(study_urls), name='study-urls'),
-
 
     # homework
     url(r'^', include(homework_router.urls), name='homework'),
-    url(r'^', include(comment_router.urls), name='homework-comment'),
+    # url(r'^', include(comment_router.urls), name='homework-comment'),
     url(r'^', include(file_router.urls), name='homework-file'),
-    url(r'^', include(submit_router.urls), name='homework-submit'),
-    url(r'^', include(submit_file_router.urls), name='homework-submit-file'),
-    url(r'^', include(submit_feedback_router.urls), name='homework-submit-feedback'),
+    # url(r'^', include(submit_router.urls), name='homework-submit'),
+    # url(r'^', include(submit_file_router.urls), name='homework-submit-file'),
+    # url(r'^', include(submit_feedback_router.urls), name='homework-submit-feedback'),
 
-    # issue
-    url(r'^', include(issue_router.urls), name='issue'),
-    url(r'^', include(comment_router.urls), name='issue-comment'),
-    url(r'^', include(file_router.urls), name='issue-file'),
-    url(r'^', include(issue_urls), name='issue-tags'),
+    # # issue
+    # url(r'^', include(issue_router.urls), name='issue'),
+    # url(r'^', include(comment_router.urls), name='issue-comment'),
+    # url(r'^', include(file_router.urls), name='issue-file'),
+    # url(r'^', include(issue_urls), name='issue-tags'),
 
 
 ]

@@ -16,13 +16,17 @@ def get_reference_file_path(instance, filename):
     return os.path.join('reference', 'file', 'pk_'+str(instance.id), str(timezone.now()), filename)
 
 
-def get_question_file_path(instance, filename):
-    return os.path.join('question', 'file', 'pk_'+str(instance.id), str(timezone.now()), filename)
+def get_basic_board_file_path(instance, filename):
+    return os.path.join('basic_board', 'file', 'pk_'+str(instance.id), str(timezone.now()), filename)
+
+
+def get_verification_file_path(instance, filename):
+    return os.path.join('verification', 'file', 'pk_'+str(instance.id), str(timezone.now()), filename)
 
 
 class Study(models.Model):
     """
-    스터디 관련 정보를 담은 클래스
+    스터디 관련 정보 클래스
     """
     title = models.CharField(null=False, blank=False, max_length=200, help_text='이름')
     topic = models.CharField(null=False, blank=False, max_length=200, help_text='주제')
@@ -43,13 +47,13 @@ class Study(models.Model):
         NanumUser,
         blank=True,
         related_name='likes',
-        through='Like', # Study, NanumUser 의 중계 모델 Like
+        through='StudyLike', # Study, NanumUser 의 중계 모델 Like
     )
     members = models.ManyToManyField(
         NanumUser,
         blank=True,
         related_name='members',
-        through='Member', # Study, NanumUser 의 중계 모델 Member
+        through='StudyMember', # Study, NanumUser 의 중계 모델 Member
     )
 
     class Meta:
@@ -59,13 +63,13 @@ class Study(models.Model):
         return 'study_' + str(self.id)
 
 
-class Member(models.Model):
+class StudyMember(models.Model):
     """
-    스터디 멤버 정보를 담은 클래스
+    스터디 멤버 정보 클래스
     """
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디 정보')
     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디에 참가한 사용자')
-    #position = models.IntegerField(default=1, help_text='스터디 권한, 숫자가 낮을수록 높은권한?')
+    # position = models.IntegerField(default=1, help_text='스터디 권한, 숫자가 낮을수록 높은권한?')
     joined_date = models.DateTimeField(auto_now_add=True, help_text='스터디 참가일')
 
     class Meta:
@@ -75,9 +79,9 @@ class Member(models.Model):
         return 'member_' + str(self.id)
 
 
-class Like(models.Model):
+class StudyLike(models.Model):
     """
-    스터디 선호도/좋아요/추천 정보를 담은 클래스
+    스터디 선호도/좋아요/추천 정보 클래스
     """
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디 정보')
     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='좋아요를 생성한 사용자')
@@ -90,59 +94,58 @@ class Like(models.Model):
         return 'like_' + str(self.id)
 
 
-class Notice(AbstractBoard):
+class Board(models.Model):
     """
-    스터디 공지사항 정보를 담은 클래스
-
-    title = models.CharField(max_length=200, help_text='제목')
-    contents = models.TextField(null=True, blank=True, help_text='내용')
-    count = models.IntegerField(default=0, help_text='조회수')
-    comment_count = models.IntegerField(default=0, help_text='댓글 수')
-    create_date = models.DateTimeField(auto_now_add=True, help_text='작성일')
-    update_date = models.DateTimeField(auto_now=True, help_text='수정일')
+    Study 와 하위 게시판의 중간역할 클래스
     """
-    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='작성자')
-    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디')
+    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디 정보')
+    type = models.IntegerField(default=0, help_text='게시판의 종류 값')
+    title = models.CharField(null=False, blank=False, max_length=200, default='이름 없음', help_text='게시판 이름')
+    nickname = models.CharField(null=True, blank=True, max_length=200, default='닉네임', help_text='게시판 별명')
+    description = models.CharField(null=True, blank=True, max_length=200, default=' ', help_text='간단한 설명')
 
     class Meta:
-        ordering = ('-pk', '-create_date', )
+        ordering = ('-pk',)
 
     def __str__(self):
-        return 'notice_' + str(self.id)
+        return 'Board_' + str(self.id)
 
 
-class Calender(models.Model):
+class Calendar(models.Model):
     """
-    스터디 시작/종료날짜, 스터디 관련 일정 정보를 담은 클래스
+    스터디 시작/종료날짜, 스터디 관련 일정 정보 클래스
     """
-    title = models.CharField(null=False, blank=False, default="제목없는 일정", max_length=200, help_text='일정 제목')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='일정을 생성한 사용자')
+    board = models.ForeignKey(Board, null=True, blank=True, on_delete=models.CASCADE, help_text='일정과 관련된 게시판')
+    title = models.CharField(null=False, blank=False, default='제목없는 일정', max_length=200, help_text='일정 제목')
     start_date = models.DateTimeField(null=False, blank=False, help_text='일정 시작일')
     end_date = models.DateTimeField(null=False, blank=False, help_text='일정 종료일')
     description = models.TextField(null=True, blank=True, help_text='일정 설명')
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디')
     is_oneday = models.BooleanField(null=False, blank=False, default=False, help_text='종일 일정 여부')
-    is_part_time = models.BooleanField(null=False, blank=False, default=False, help_text='시간 일정 여부')
+    color = models.CharField(null=True, blank=True, max_length=200, default='#FFFFFF', help_text='일정 색상')
+    linked_type = models.IntegerField(default=-1, help_text='일정과 관련된 글의 종류(과제, 자료 등)')
 
     class Meta:
         ordering = ('-pk', '-start_date', )
 
     def __str__(self):
-        return 'calender_' + str(self.id)
+        return 'calendar_' + str(self.id)
 
 
-class CalenderTag(models.Model):
+class CalendarTag(models.Model):
     """
-    스터디 일정에 대한 카테고리 정보를 담은 클래스
+    스터디 일정에 대한 카테고리 정보 클래스
     """
     name = models.CharField(null=False, blank=False, max_length=50, help_text='일정 분류')
     # related_name 의 default 값은 '클래스명(소문자)_set', 여기서는 명시적으로 선언함
-    calender = models.ManyToManyField(Calender, related_name='calendertag_set', blank=True, help_text='일정 정보')
+    calendar = models.ManyToManyField(Calendar, related_name='calendar_tag_set', blank=True, help_text='일정 정보')
 
     class Meta:
         ordering = ('-pk', 'name',)
 
     def __str__(self):
-        return 'calender_tag_' + str(self.id)
+        return 'calendar_tag_' + str(self.id)
 
 
 class Reference(AbstractBoard):
@@ -157,8 +160,7 @@ class Reference(AbstractBoard):
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료를 업로드한 사용자')
-    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료와 관련된 스터디')
-    calender = models.ForeignKey(Calender, null=True, blank=True, help_text='참고자료와 관련된 일정')
+    board = models.ForeignKey(Board, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료와 관련된 게시판')
 
     class Meta:
         ordering = ('-pk', '-create_date', )
@@ -167,27 +169,9 @@ class Reference(AbstractBoard):
         return 'reference_' + str(self.id)
 
 
-class ReferenceComment(AbstractComment):
-    """
-    스터디 참고자료에 대한 댓글 정보를 담은 클래스
-
-    contents = models.TextField(help_text='내용')
-    create_date = models.DateTimeField(auto_now_add=True, help_text='작성일')
-    update_date = models.DateTimeField(auto_now=True, help_text='수정일')
-    """
-    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료에 대한 댓글')
-    reference = models.ForeignKey(Reference, null=True, blank=True, on_delete=models.CASCADE, help_text='참고자료')
-
-    class Meta:
-        ordering = ('-pk', 'create_date', )
-
-    def __str__(self):
-        return 'reference_comment_' + str(self.id)
-
-
 class ReferenceFile(AbstractFile):
     """
-    스터디 참고자료에서 첨부파일에 대한 정보를 담은 클래스
+    스터디 참고자료에서 첨부파일에 대한 정보 클래스
 
     name = models.CharField(max_length=200, help_text='파일 이름')
     size = models.CharField(max_length=200, help_text="파일 크기(kb) in char type")
@@ -207,12 +191,13 @@ class ReferenceFile(AbstractFile):
         ordering = ('-pk', 'create_date', )
 
     def __str__(self):
+
         return 'reference_file_' + str(self.id)
 
 
-class Question(AbstractBoard):
+class BasicBoard(AbstractBoard):
     """
-    스터디에서 질문 정보를 담은 클래스
+    기본적인 기능(공지사항, 자유게시판,) 게시판 클래스
 
     title = models.CharField(max_length=200, help_text='제목')
     contents = models.TextField(null=True, blank=True, help_text='내용')
@@ -221,37 +206,38 @@ class Question(AbstractBoard):
     create_date = models.DateTimeField(auto_now_add=True, help_text='작성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
-    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='질문글을 생성한 사용자')
-    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='질문글이 포함된 스터디')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='게시글을 생성한 사용자')
+    board = models.ForeignKey(Board, null=True, blank=True, on_delete=models.CASCADE, help_text='게시판 정보')
+    like_count = models.IntegerField(default=0, help_text='게시글에 대한 좋아요 수')
 
     class Meta:
         ordering = ('-pk', '-create_date', )
 
     def __str__(self):
-        return 'question_' + str(self.id)
+        return 'basic_board_' + str(self.id)
 
 
-class QuestionComment(AbstractComment):
+class BasicBoardComment(AbstractComment):
     """
-    스터디 질문에 대한 댓글 정보를 담은 클래스
+    기본 게시판의 댓글 정보 클래스
 
     contents = models.TextField(help_text='내용')
     create_date = models.DateTimeField(auto_now_add=True, help_text='작성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
-    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='질문글에 대한 댓글을 생성한 사용자')
-    question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE, help_text='댓글에 대한 상위 질문')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='게시글을 생성한 사용자')
+    basic_board = models.ForeignKey(BasicBoard, null=True, blank=True, on_delete=models.CASCADE, help_text='게시글')
 
     class Meta:
-        ordering = ('-pk', 'create_date', )
+        ordering = ('create_date', )
 
     def __str__(self):
-        return 'question_comment_' + str(self.id)
+        return 'basic_board_comment_' + str(self.id)
 
 
-class QuestionFile(AbstractFile):
+class BasicBoardFile(AbstractFile):
     """
-    질문글에서 첨부한 파일에 대한 정보를 담은 클래스
+    기본 기능게시글의 첨부파일 클래스
 
     name = models.CharField(max_length=200, help_text='파일 이름')
     size = models.CharField(max_length=200, help_text="파일 크기(kb) in char type")
@@ -259,16 +245,57 @@ class QuestionFile(AbstractFile):
     create_date = models.DateTimeField(auto_now_add=True, help_text='생성일')
     update_date = models.DateTimeField(auto_now=True, help_text='수정일')
     """
+    basic_board = models.ForeignKey(BasicBoard, null=True, blank=True, on_delete=models.CASCADE, help_text='게시글')
     attached_file = models.FileField(
         null=True,
         blank=True,
-        upload_to=get_question_file_path,
-        help_text='질문글에 대한 첨부파일'
+        upload_to=get_basic_board_file_path,
+        help_text='게시글 첨부파일'
     )
-    question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE, help_text='첨부파일이 포함된 질문글')
 
     class Meta:
-        ordering = ('-pk', 'create_date', )
+        ordering = ('-pk', 'create_date',)
 
     def __str__(self):
-        return 'question_file_' + str(self.id)
+        return 'basic_board_file_' + str(self.id)
+
+
+class Verification(models.Model):
+    """
+    해당 날짜의 인증내역을 모아놓은 클래스
+    """
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='인증 토픽을 생성한 사용자')
+    board = models.ForeignKey(Board, null=True, blank=True, on_delete=models.CASCADE, help_text='게시판 정보')
+    description = models.CharField(null=True, blank=True, max_length=200, default=' ', help_text='간단한 설명')
+    start_date = models.DateTimeField(null=True, blank=True, help_text='시작일')
+    end_date = models.DateTimeField(null=True, blank=True, help_text='종료일')
+
+    class Meta:
+        ordering = ('-pk', 'start_date',)
+
+    def __str__(self):
+        return 'verification_' + str(self.id)
+
+
+class VerificationFile(models.Model):
+    """
+    인증 시 사용자가 생성한 파일 클래스
+    """
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='인증 완료한 사용자')
+    verification = models.ForeignKey(Verification, null=True, blank=True, on_delete=models.CASCADE, help_text='인증 정보')
+    attached_image = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=get_verification_file_path,
+        help_text='인증 첨부파일'
+    )
+    is_checked = models.BooleanField(default='False', help_text='인증여부')
+    upload_date = models.DateTimeField(auto_now_add=True, help_text='인증 업로드 날짜')
+    checked_date = models.DateTimeField(auto_now=True, help_text='인증 확인 날짜')
+    rank = models.IntegerField(default='0', help_text='인증 순위(스터디장이 결정)')
+
+    class Meta:
+        ordering = ('-pk', 'upload_date',)
+
+    def __str__(self):
+        return 'verification_file_' + str(self.id)
