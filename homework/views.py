@@ -21,26 +21,30 @@ class HomeWorkViewSet(viewsets.ModelViewSet):
     serializer_class = HomeWorkSerializer
 
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+class HomeWorkFileViewSet(viewsets.ModelViewSet):
+    queryset = HomeWorkFile.objects.all()
+    serializer_class = HomeWorkFileSerializer
 
-
-class AttachedFIleViewSet(viewsets.ModelViewSet):
-    queryset = AttachedFIle.objects.all()
-    serializer_class = AttachedFIleSerializer
-
-
-class SubmitViewSet(viewsets.ModelViewSet):
-    queryset = Submit.objects.all()
-    serializer_class = SubmitSerializer
-
-
-class SubmitFileViewSet(viewsets.ModelViewSet):
-    queryset = SubmitFile.objects.all()
-    serializer_class = SubmitFileSerializer
-
-
-class FeedbackViewSet(viewsets.ModelViewSet):
-    queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
+# class CommentViewSet(viewsets.ModelViewSet):
+#     queryset = Comment.objects.all()
+#     serializer_class = CommentSerializer
+#
+#
+# class AttachedFIleViewSet(viewsets.ModelViewSet):
+#     queryset = AttachedFIle.objects.all()
+#     serializer_class = AttachedFIleSerializer
+#
+#
+# class SubmitViewSet(viewsets.ModelViewSet):
+#     queryset = Submit.objects.all()
+#     serializer_class = SubmitSerializer
+#
+#
+# class SubmitFileViewSet(viewsets.ModelViewSet):
+#     queryset = SubmitFile.objects.all()
+#     serializer_class = SubmitFileSerializer
+#
+#
+# class FeedbackViewSet(viewsets.ModelViewSet):
+#     queryset = Feedback.objects.all()
+#     serializer_class = FeedbackSerializer
