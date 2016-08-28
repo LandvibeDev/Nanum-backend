@@ -19,15 +19,17 @@ from django.conf.urls.static import static
 from django.shortcuts import redirect
 
 from rest_framework.urlpatterns import format_suffix_patterns
-import rest_framework
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework import routers
 
 from issue.urls import issue_router, comment_router, file_router
 from issue.urls import urlpatterns as issue_urls
 from study.urls import *
 from homework.urls import *
+from accounts.urls import *
 from study.urls import urlpatterns as study_urls
 from accounts.views import join, delete_account, info_account, first_page
+
 from nanum.settings import base
 
 
@@ -41,7 +43,7 @@ urlpatterns = [
 
     # before login, get token
     url(r'^obtain-auth-token/$', obtain_auth_token),
-
+    url(r'^', include(user_router.urls), name='user'),
     # accounts
     url(
         r'^accounts/login/$', account_views.login, name='login',
