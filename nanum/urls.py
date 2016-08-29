@@ -27,6 +27,7 @@ from issue.urls import urlpatterns as issue_urls
 from study.urls import *
 from homework.urls import *
 from accounts.urls import *
+from basic_board.urls import *
 from study.urls import urlpatterns as study_urls
 from accounts.views import join, delete_account, info_account, first_page
 
@@ -56,25 +57,33 @@ urlpatterns = [
     url(r'^accounts/delete/(?P<username>[\w]+)$', delete_account, name='delete'),
     url(r'^accounts/info/(?P<user_pk>[\w]+)$', info_account, name='info'),
 
-    # study
+    # study - study, board, member, like
     url(r'^', include(study_router.urls), name='study'),
     url(r'^', include(member_router.urls), name='study-member'),
     url(r'^', include(board_router.urls), name='study-board'),
+    url(r'^', include(study_urls), name='study-urls'),
+
+    # basic_board
     url(r'^', include(basic_board_router.urls), name='study-board-basic_board'),
     url(r'^', include(basic_board_comment_router.urls), name='study-board-basic_board-comment'),
     url(r'^', include(basic_board_file_router.urls), name='study-board-basic_board-file'),
-    url(r'^', include(calender_router.urls), name='study-board-calender'),
-    url(r'^', include(calender_tag_router.urls), name='study-board-calender_tag'),
+
+    # reference
     url(r'^', include(reference_router.urls), name='study-reference'),
     url(r'^', include(reference_file_router.urls), name='study-reference-file'),
+
+    # verification
     url(r'^', include(verification_router.urls), name='study-board-verification'),
     url(r'^', include(verification_file_router.urls), name='study-board-verification-file'),
-    url(r'^', include(study_urls), name='study-urls'),
+
+    # calendar
+    url(r'^', include(calender_router.urls), name='study-board-calender'),
+    url(r'^', include(calender_tag_router.urls), name='study-board-calender_tag'),
 
     # homework
     url(r'^', include(homework_router.urls), name='homework'),
-    # url(r'^', include(comment_router.urls), name='homework-comment'),
     url(r'^', include(file_router.urls), name='homework-file'),
+    # url(r'^', include(comment_router.urls), name='homework-comment'),
     # url(r'^', include(submit_router.urls), name='homework-submit'),
     # url(r'^', include(submit_file_router.urls), name='homework-submit-file'),
     # url(r'^', include(submit_feedback_router.urls), name='homework-submit-feedback'),
@@ -84,8 +93,6 @@ urlpatterns = [
     # url(r'^', include(comment_router.urls), name='issue-comment'),
     # url(r'^', include(file_router.urls), name='issue-file'),
     # url(r'^', include(issue_urls), name='issue-tags'),
-
-
 ]
 
 # using image url

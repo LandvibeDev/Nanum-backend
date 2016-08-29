@@ -21,30 +21,15 @@ member_router.register(r'member', StudyMemberViewSet, base_name='study-member')
 board_router = nested_routers.NestedSimpleRouter(study_router, r'study', lookup='study')
 board_router.register(r'board', BoardViewSet, base_name='study-board')
 
-# /study/{pk}/board/{b_id}/basic_board/ :get, post
-# /study/{pk}/board/{b_id}/basic_board/{bb_pk}/ : get, put, patch, delete
-basic_board_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')
-basic_board_router.register(r'basic_board', BasicBoardViewSet, base_name='study-board-basic_board')
-
-# /study/{pk}/board/{b_id}/basic_board/{bb_pk}/comment :get, post
-# /study/{pk}/board/{b_id}/basic_board/{bb_pk}/comment/{c_pk} : get, put, patch, delete
-basic_board_comment_router = nested_routers.NestedSimpleRouter(basic_board_router, r'basic_board', lookup='basic_board')
-basic_board_comment_router.register(r'comment', BasicBoardCommentViewSet, base_name='study-board-basic_board-comment')
-
-# /study/{pk}/board/{b_id}/basic_board/{bb_pk}/comment :get, post
-# /study/{pk}/board/{b_id}/basic_board/{bb_pk}/comment/{c_pk} : get, put, patch, delete
-basic_board_file_router = nested_routers.NestedSimpleRouter(basic_board_router, r'basic_board', lookup='basic_board')
-basic_board_file_router.register(r'file', BasicBoardFileViewSet, base_name='study-board-basic_board-file')
-
 # /study/{pk}/board/{b_id}/calender/ :get, post
 # /study/{pk}/board/{b_id}/calender/{c_pk}/ : get, put, patch, delete
 calender_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')
-calender_router.register(r'calender', CalendarViewSet, base_name='study-board-calender')
+calender_router.register(r'calendar', CalendarViewSet, base_name='study-board-calendar')
 
 # /study/{pk}/board/{b_id}/calender_tag/ :get, post
 # /study/{pk}/board/{b_id}/calender_tag/{ct_pk}/ : get, put, patch, delete
 calender_tag_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')
-calender_tag_router.register(r'calender_tag', CalendarTagViewSet, base_name='study-board-calender_tag')
+calender_tag_router.register(r'calendar_tag', CalendarTagViewSet, base_name='study-board-calen  dar_tag')
 
 # /study/{pk}/board/{b_id}/reference/ :get, post
 # /study/{pk}/board/{b_id}/reference/{r_pk}/ : get, put, patch, delete
