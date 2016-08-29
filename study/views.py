@@ -114,65 +114,6 @@ class BoardViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-# ===================================================
-# ============== type 4 : Calendar ==============
-# ===================================================
-@permission_classes((AllowAny,))
-class CalendarViewSet(viewsets.ModelViewSet):
-    queryset = Calendar.objects.all()
-    serializer_class = CalendarGetSerializer
-
-    # GenericAPIView 에 똑같은 이름의 함수가 있다.
-    def _get_serializer(self, *args, **kwargs):
-        serializer_class = CalendarSerializer
-        kwargs['context'] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
-
-    # override ModelViewSet.CreateModelMixin.create
-    def create(self, request, *args, **kwargs):
-        serializer = self._get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    # override ModelViewSet.UpdateModelMixin.update
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False) #
-        instance = self.get_object()
-        serializer = self._get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
-
-@permission_classes((AllowAny,))
-class CalendarTagViewSet(viewsets.ModelViewSet):
-    queryset = CalendarTag.objects.all()
-    serializer_class = CalendarTagGetSerializer
-
-    def _get_serializer(self, *args, **kwargs):
-        serializer_class = CalendarTagSerializer
-        kwargs['context'] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
-
-    # override ModelViewSet.CreateModelMixin.create
-    def create(self, request, *args, **kwargs):
-        # 인스턴스 생성 시 사용되는 시리얼라이저를 바꾼다.
-        serializer = self._get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    # override ModelViewSet.UpdateModelMixin.update
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False) #
-        instance = self.get_object()
-        serializer = self._get_serializer(instance, data=request.data, partial=partial) #
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
 
 
 # ===================================================

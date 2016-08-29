@@ -30,6 +30,7 @@ from accounts.urls import *
 from basic_board.urls import *
 from reference.urls import *
 from verification.urls import *
+from schedule.urls import *
 from study.urls import urlpatterns as study_urls
 from accounts.views import join, delete_account, info_account, first_page
 
@@ -79,8 +80,8 @@ urlpatterns = [
     url(r'^', include(verification_file_router.urls), name='study-board-verification-file'),
 
     # calendar
-    url(r'^', include(calender_router.urls), name='study-board-calender'),
-    url(r'^', include(calender_tag_router.urls), name='study-board-calender_tag'),
+    url(r'^', include(schedule_router.urls), name='study-board-calender'),
+    url(r'^', include(schedule_tag_router.urls), name='study-board-calender_tag'),
 
     # homework
     url(r'^', include(homework_router.urls), name='homework'),

@@ -103,51 +103,6 @@ class BoardGetSerializer(serializers.ModelSerializer):
                   'study')
 
 
-class CalendarSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        __dynamic__init__(self, *args, **kwargs)
-
-    class Meta:
-        model = Calendar
-        fields = ('title', 'start_date', 'end_date', 'description', 'study', 'is_oneday', 'color', 'linked_type',
-                  'calendar_tag_set', 'user', 'board')
-
-
-class CalendarTagSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        __dynamic__init__(self, *args, **kwargs)
-
-    class Meta:
-        model = CalendarTag
-        fields = ('name', 'calendar')
-
-
-class CalendarTagGetSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        __dynamic__init__(self, *args, **kwargs)
-
-    # calendar tag 정보 조회 시 연관된 calendar 정보를 json 형식으로 불러옴
-    calendar = CalendarSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = CalendarTag
-        fields = ('id', 'name', 'calendar')
-
-
-class CalendarGetSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        __dynamic__init__(self, *args, **kwargs)
-    # calendar 에서 calendar Tag 의 정보를 얻는 법
-    # models.CalendarTag 에서 정의된 many to many field 에서 related_name을 밑의 Meta class field 에 추가하면 된다.
-    # related_name arg 의 default 는 '클래스명(소문자)_set'
-    calendar_tag_set = CalendarTagSerializer(many=True, read_only=True, fields=('id', 'name'))
-    study = StudySerializer(read_only=True, fields=('id', 'title',))
-    class Meta:
-        model = Calendar
-        fields = ('id', 'title', 'start_date', 'end_date', 'description', 'study', 'is_oneday', 'color', 'linked_type'
-                  , 'calendar_tag_set', 'user', 'board')
-
-
 # 스터디 정보에서 좋아요에 대한 세부정보 참고
 class StudyLikeSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):

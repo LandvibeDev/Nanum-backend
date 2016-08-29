@@ -21,17 +21,6 @@ member_router.register(r'member', StudyMemberViewSet, base_name='study-member')
 board_router = nested_routers.NestedSimpleRouter(study_router, r'study', lookup='study')
 board_router.register(r'board', BoardViewSet, base_name='study-board')
 
-# /study/{pk}/board/{b_id}/calender/ :get, post
-# /study/{pk}/board/{b_id}/calender/{c_pk}/ : get, put, patch, delete
-calender_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')
-calender_router.register(r'calendar', CalendarViewSet, base_name='study-board-calendar')
-
-# /study/{pk}/board/{b_id}/calender_tag/ :get, post
-# /study/{pk}/board/{b_id}/calender_tag/{ct_pk}/ : get, put, patch, delete
-calender_tag_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')
-calender_tag_router.register(r'calendar_tag', CalendarTagViewSet, base_name='study-board-calen  dar_tag')
-
-
 # like => function
 # /study/{pk}/like : post
 # /study/{pk}/like/{l_pk} : delete

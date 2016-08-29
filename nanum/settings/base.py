@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'basic_board',
     'reference',
     'verification',
+    'schedule',
 ]
 
 MIDDLEWARE_CLASSES = [
