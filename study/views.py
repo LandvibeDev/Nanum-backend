@@ -115,59 +115,6 @@ class BoardViewSet(viewsets.ModelViewSet):
 
 
 # ===================================================
-# ============== type 3 : Verificaiton ==============
-# ===================================================
-@permission_classes((AllowAny,))
-class VerificationViewSet(viewsets.ModelViewSet):
-    queryset = Verification.objects.all()
-    serializer_class = VerificationGetSerializer
-
-    # override GenericAPIView.get_serializer
-    def _get_serializer(self, *args, **kwargs):
-        serializer_class = VerificationSerializer
-        kwargs['context'] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
-
-    # override ModelViewSet.CreateModelMixin.create
-    def create(self, request, *args, **kwargs):
-        serializer = self._get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    # override ModelViewSet.UpdateModelMixin.update
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)  #
-        instance = self.get_object()
-        serializer = self._get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
-
-@permission_classes((AllowAny,))
-class VerificationFileViewSet(viewsets.ModelViewSet):
-    queryset = VerificationFile.objects.all()
-    serializers_class = VerificationFileGetSerializer
-
-    # override
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        # 다운로드 수 증가 및 적용
-        instance.download_count += 1
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-    # override
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()     # file 관련 인스턴스 개체 삭제
-        instance.attached_file.delete()  # 실제 file 삭제
-        return super(VerificationFileViewSet, self).destroy(request, *args, **kwargs)
-
-
-# ===================================================
 # ============== type 4 : Calendar ==============
 # ===================================================
 @permission_classes((AllowAny,))
