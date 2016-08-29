@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.permissions import *
+from rest_framework.authtoken.models import Token
 
 from accounts.models import NanumUser
 from accounts.serializer import NanumUserSerializer, NanumCreateUserSerializer, UserSerializer
@@ -53,4 +54,13 @@ def first_page(request):
 class NanumUserViewSet(viewsets.ModelViewSet):
     queryset = NanumUser.objects.all()
     serializer_class = NanumUserSerializer
+
+    def retrieve(self, request, pk=None):
+        if pk == 'i':
+            token = request.META['HTTP_AUTHORIZATION']
+            user_by_token = Token.objects.get(key=token[6:]).user
+            nanum_user = NanumUser.objects.get(user=user_by_token)
+            return Response(NanumUserSerializer(nanum_user).data)
+        return super(NanumUserViewSet, self).retrieve(request, pk)
+
 
