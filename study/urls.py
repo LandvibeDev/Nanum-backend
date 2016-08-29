@@ -31,16 +31,6 @@ calender_router.register(r'calendar', CalendarViewSet, base_name='study-board-ca
 calender_tag_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')
 calender_tag_router.register(r'calendar_tag', CalendarTagViewSet, base_name='study-board-calen  dar_tag')
 
-# /study/{pk}/board/{b_id}/reference/ :get, post
-# /study/{pk}/board/{b_id}/reference/{r_pk}/ : get, put, patch, delete
-reference_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')
-reference_router.register(r'reference', ReferenceViewSet, base_name='study-board-reference')
-
-# /study/{pk}/board/{b_id}/reference/{r_pk}/file/ :get, post
-# /study/{pk}/board/{b_id}/reference/{r_pk}/file/{c_pk}/ : get, put, patch, delete
-reference_file_router = nested_routers.NestedSimpleRouter(reference_router, r'reference', lookup='reference')
-reference_file_router.register(r'file', ReferenceFileViewSet, base_name='study-board-reference-file')
-
 # /study/{pk}/board/{b_id}/verification/ :get, post
 # /study/{pk}/board/{b_id}/verification/{v_pk}/ : get, put, patch, delete
 verification_router = nested_routers.NestedSimpleRouter(board_router, r'board', lookup='board')

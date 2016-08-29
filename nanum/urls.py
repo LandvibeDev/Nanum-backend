@@ -28,6 +28,7 @@ from study.urls import *
 from homework.urls import *
 from accounts.urls import *
 from basic_board.urls import *
+from reference.urls import *
 from study.urls import urlpatterns as study_urls
 from accounts.views import join, delete_account, info_account, first_page
 

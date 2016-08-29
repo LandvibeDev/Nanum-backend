@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'study',
     'homework',
     'basic_board',
+    'reference',
+    'verification',
 ]
 
 MIDDLEWARE_CLASSES = [
