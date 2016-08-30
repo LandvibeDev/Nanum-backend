@@ -3,7 +3,7 @@ from rest_framework import serializers
 from study.models import *
 from accounts.models import NanumUser
 from accounts.serializer import NanumUserSerializer, UserSerializer
-from study.serializer import __dynamic__init__, BoardSerializer
+from abstract.serializer import __dynamic__init__
 from reference.models import Reference, ReferenceFile
 
 
@@ -15,7 +15,7 @@ class ReferenceGetSerializer(serializers.ModelSerializer):
 
     # 나눔 유저랑 외래키 관계여서 user안에 user또있음
     user = NanumUserSerializer(read_only=True)
-    board = BoardSerializer(read_only=True, fields=('id', 'study', 'type', 'title'))
+    # board = BoardSerializer(read_only=True, fields=('id', 'study', 'type', 'title'))
 
     class Meta:
         model = Reference

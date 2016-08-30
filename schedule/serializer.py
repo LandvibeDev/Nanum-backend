@@ -3,7 +3,8 @@ from rest_framework import serializers
 from schedule.models import *
 from accounts.models import NanumUser
 from accounts.serializer import NanumUserSerializer, UserSerializer
-from study.serializer import __dynamic__init__, StudySerializer
+# from study.serializer import StudySerializer
+from abstract.serializer import __dynamic__init__
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -12,7 +13,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ('title', 'start_date', 'end_date', 'description', 'study', 'is_oneday', 'color', 'linked_type',
+        fields = ('id', 'title', 'start_date', 'end_date', 'description', 'study', 'is_oneday', 'color', 'linked_type',
                   'schedule_tag_set', 'user', 'board')
 
 
@@ -22,7 +23,7 @@ class ScheduleTagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ScheduleTag
-        fields = ('name', 'schedule')
+        fields = ('id', 'name', 'schedule')
 
 
 class ScheduleTagGetSerializer(serializers.ModelSerializer):
@@ -44,7 +45,8 @@ class ScheduleGetSerializer(serializers.ModelSerializer):
     # models.CalendarTag 에서 정의된 many to many field 에서 related_name을 밑의 Meta class field 에 추가하면 된다.
     # related_name arg 의 default 는 '클래스명(소문자)_set'
     schedule_tag_set = ScheduleTagSerializer(many=True, read_only=True, fields=('id', 'name'))
-    study = StudySerializer(read_only=True, fields=('id', 'title',))
+    # study = StudySerializer(read_only=True, fields=('id', 'title',))
+
     class Meta:
         model = Schedule
         fields = ('id', 'title', 'start_date', 'end_date', 'description', 'study', 'is_oneday', 'color', 'linked_type'

@@ -26,6 +26,12 @@ class BasicBoard(AbstractBoard):
     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='게시글을 생성한 사용자')
     board = models.ForeignKey(Board, null=True, blank=True, on_delete=models.CASCADE, help_text='게시판 정보')
     like_count = models.IntegerField(default=0, help_text='게시글에 대한 좋아요 수')
+    likes = models.ManyToManyField(
+        NanumUser,
+        blank=True,
+        related_name='basic_board_likes',
+        through='BasicBoardLike',  # BasicBoard, NanumUser 의 중계 모델 Like
+    )
 
     class Meta:
         ordering = ('-pk', '-create_date', )
@@ -75,3 +81,18 @@ class BasicBoardFile(AbstractFile):
 
     def __str__(self):
         return 'basic_board_file_' + str(self.id)
+
+
+class BasicBoardLike(models.Model):
+    """
+    게시글 선호도/좋아요/추천 정보 클래스
+    """
+    basic_board = models.ForeignKey(BasicBoard, null=True, blank=True, on_delete=models.CASCADE, help_text='게시글 정보')
+    user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='좋아요 생성 사용자')
+    create_date = models.DateTimeField(auto_now_add=True, help_text='좋아요 누른 날짜')
+
+    class Meta:
+        ordering = ('-pk', '-create_date', )
+
+    def __str__(self):
+        return 'basic_board_like_' + str(self.id)

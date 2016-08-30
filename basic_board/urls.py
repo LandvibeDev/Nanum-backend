@@ -21,3 +21,12 @@ basic_board_comment_router.register(r'comment', BasicBoardCommentViewSet, base_n
 # /study/{pk}/board/{b_id}/basic_board/{bb_pk}/comment/{c_pk} : get, put, patch, delete
 basic_board_file_router = nested_routers.NestedSimpleRouter(basic_board_router, r'basic_board', lookup='basic_board')
 basic_board_file_router.register(r'file', BasicBoardFileViewSet, base_name='study-board-basic_board-file')
+
+urlpatterns = [
+    url(r'^study/(?P<study_pk>[0-9]+)/board/(?P<board_pk>[0-9]+)/basic_board/(?P<basic_board_pk>[0-9]+)/like/$'
+        , basic_board_like_create, name='like_create'),
+    url(r'^study/(?P<study_pk>[0-9]+)/board/(?P<board_pk>[0-9]+)/basic_board/(?P<basic_board_pk>[0-9]+)/like/(?P<like_pk>[0-9]+)/$'
+        , basic_board_like_delete, name='like_delete'),
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])

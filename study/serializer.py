@@ -4,27 +4,12 @@ from study.models import *
 from accounts.models import NanumUser
 from accounts.serializer import NanumUserSerializer, UserSerializer
 
-
-def __dynamic__init__(self, *args, **kwargs):
-    """
-    참고 링크 - http://www.django-rest-framework.org/api-guide/serializers/#dynamically-modifying-fields
-
-    __init__ 함수를 오버라이딩 하여 다음과 같이 Serializer instance 생성 시 fields tuple을 인자로 넘기도록 함.
-    MySerializer(user, fields=('a', 'b', 'c'))
-    a, b, c field 정보만 출력가능
-    """
-    # Don't pass the 'fields' arg up to the superclass
-    fields = kwargs.pop('fields', None)
-
-    # Instantiate the superclass normally
-    super(serializers.ModelSerializer, self).__init__(*args, **kwargs)
-
-    if fields is not None:
-        # Drop any fields that are not specified in the `fields` argument.
-        allowed = set(fields)
-        existing = set(self.fields.keys())
-        for field_name in existing - allowed:
-            self.fields.pop(field_name)
+from basic_board.serializer import BasicBoardSerializer
+from reference.serializer import ReferenceSerializer
+from homework.serializer import HomeWorkSerializer
+from verification.serializer import VerificationSerializer
+from schedule.serializer import ScheduleSerializer, ScheduleTagSerializer
+from abstract.serializer import __dynamic__init__
 
 """
     ~~~GetSerializer : 해당 모델의 인스턴스 정보를 요청 시 사용
@@ -95,12 +80,18 @@ class BoardGetSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         __dynamic__init__(self, *args, **kwargs)
 
-    study = StudySerializer(read_only=True, fields=('id', 'title', 'topic'))
+    study = StudySerializer(read_only=True)
+    basicboard_set = BasicBoardSerializer(read_only=True, many=True, fields=('id', 'title','contents'))
+    reference_set = ReferenceSerializer(read_only=True, many=True)
+    homework_set = HomeWorkSerializer(read_only=True, many=True)
+    verification_set = VerificationSerializer(read_only=True, many=True)
+    schedule_set = ScheduleSerializer(read_only=True, many=True)
 
     class Meta:
         model = Board
         fields = ('id', 'type', 'title', 'nickname', 'description',
-                  'study')
+                  'study',
+                  'basicboard_set', 'reference_set', 'homework_set', 'verification_set', 'schedule_set')
 
 
 # 스터디 정보에서 좋아요에 대한 세부정보 참고
@@ -121,8 +112,9 @@ class StudyGetSerializer(serializers.ModelSerializer):
 
     # likes = StudyLikeSerializer(many=True, read_only=True, fields=('create_date',))
     # members = StudyMemberSerializer(many=True, read_only=True)
+    board_set = BoardSerializer(read_only=True, many=True)
 
     class Meta:
         model = Study
         fields = ('id', 'title', 'topic', 'thumbnail', 'start_date', 'end_date', 'joined_user_count', 'max_user_count', 'is_active', 'is_enrolling', 'like_count',
-                  'likes', 'members',)
+                  'likes', 'members', 'board_set')
