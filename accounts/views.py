@@ -1,21 +1,20 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import (
-    get_user_model, login as auth_login,
-    logout as auth_logout, update_session_auth_hash, authenticate
+    get_user_model, login as auth_login
 )
-from django.contrib.auth.models import User
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import get_object_or_404, redirect
+from rest_framework import parsers, renderers
 from rest_framework import status, viewsets
-from rest_framework.permissions import *
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import *
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from accounts.models import NanumUser
-from accounts.serializer import NanumUserSerializer, NanumCreateUserSerializer, UserSerializer
-
+from accounts.serializer import NanumUserSerializer, NanumCreateUserSerializer
 
 
 @api_view(['POST'])
@@ -36,7 +35,7 @@ def join(request, format=None):
 @permission_classes((AllowAny,))
 def delete_account(request, username=None, format=None):
     if request.method == 'DELETE':
-        user = get_object_or_404(get_user_model(),username=username)
+        user = get_object_or_404(get_user_model(), username=username)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -55,8 +54,6 @@ def first_page(request):
     return redirect('/study/')
 
 
-
-
 class NanumUserViewSet(viewsets.ModelViewSet):
     queryset = NanumUser.objects.all()
     serializer_class = NanumUserSerializer
@@ -66,19 +63,8 @@ class NanumUserViewSet(viewsets.ModelViewSet):
             token = request.META['HTTP_AUTHORIZATION']
             user_by_token = Token.objects.get(key=token[6:]).user
             nanum_user = NanumUser.objects.get(user=user_by_token)
-            # user = User.objects.get(auth_token=token[6:])
-            # auth_user = authenticate(username=user.username, password=user.password)
-            # auth_login(request, auth_user)
             return Response(NanumUserSerializer(nanum_user).data)
         return super(NanumUserViewSet, self).retrieve(request, pk)
-
-
-
-from rest_framework import parsers, renderers
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 
 class ObtainAuthToken(APIView):
@@ -93,7 +79,7 @@ class ObtainAuthToken(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        auth_login(request, user)
+        auth_login(request, user) # save session
         return Response({'token': token.key})
 
 

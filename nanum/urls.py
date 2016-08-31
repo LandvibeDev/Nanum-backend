@@ -19,7 +19,6 @@ from django.conf.urls.static import static
 from django.shortcuts import redirect
 
 from rest_framework.urlpatterns import format_suffix_patterns
-#from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework import routers
 
 from issue.urls import issue_router, comment_router, file_router
@@ -47,12 +46,11 @@ urlpatterns = [
     # admin
     url(r'^admin/', admin.site.urls),
 
-    # before login, get token
-    url(r'^obtain-auth-token/$', obtain_auth_token),
-    url(r'^', include(user_router.urls), name='user'),
     # accounts
+    url(r'^', include(user_router.urls), name='user'),
+    url(r'^accounts/login/$', obtain_auth_token),
     url(
-        r'^accounts/login/$', account_views.login, name='login',
+        r'^accounts/login-ui/$', account_views.login, name='login',
         kwargs={
             'template_name': 'login.html'
         }
