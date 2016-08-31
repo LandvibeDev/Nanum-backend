@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 from django.shortcuts import redirect
 
 from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework.authtoken.views import obtain_auth_token
+#from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework import routers
 
 from issue.urls import issue_router, comment_router, file_router
@@ -32,7 +32,7 @@ from reference.urls import *
 from verification.urls import *
 from schedule.urls import *
 from study.urls import urlpatterns as study_urls
-from accounts.views import join, delete_account, info_account, first_page
+from accounts.views import join, delete_account, info_account, first_page, obtain_auth_token
 
 from nanum.settings import base
 

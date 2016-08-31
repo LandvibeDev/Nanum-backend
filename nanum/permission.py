@@ -7,7 +7,6 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from study.models import *
 
 
-# 스터디 모델 생성 되면 구현 완료할 것!
 # 권한 관련 레퍼런스
 # http://www.django-rest-framework.org/api-guide/permissions/#custom-permissions
 
@@ -23,6 +22,7 @@ class IsOwnerOrReadOnly(BasePermission):
             return True
 
         return obj.user == request.user
+
 
 
 # # TODO 테스트 필요
@@ -57,14 +57,14 @@ class StudyMemeberPermission(BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.
     """
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in SAFE_METHODS:
-            return True
-
-        request_joined_studies = Member.objects.filter(user=request.user)
-        return obj.study in request_joined_studies
+    # def has_object_permission(self, request, view, obj):
+    #     # Read permissions are allowed to any request,
+    #     # so we'll always allow GET, HEAD or OPTIONS requests.
+    #     if request.method in SAFE_METHODS:
+    #         return True
+    #
+    #     request_joined_studies = Member.objects.filter(user=request.user)
+    #     return obj.study in request_joined_studies
 
 
 # 스터디장, 스터디 매니저, 스터디원 그룹 생성)
