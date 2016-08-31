@@ -4,6 +4,8 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+
 from rest_framework import parsers, renderers
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
@@ -49,7 +51,7 @@ def info_account(request, user_pk=None, format=None):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login-ui/')
 def first_page(request):
     return redirect('/study/')
 
@@ -81,6 +83,5 @@ class ObtainAuthToken(APIView):
         token, created = Token.objects.get_or_create(user=user)
         auth_login(request, user) # save session
         return Response({'token': token.key})
-
 
 obtain_auth_token = ObtainAuthToken.as_view()

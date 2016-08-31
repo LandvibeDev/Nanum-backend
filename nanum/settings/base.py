@@ -82,7 +82,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
     ],
 }
 
@@ -151,7 +151,7 @@ MEDIA_URL = '/upload/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '../uploaded_files') # 저장되는 장소
 
 # Accounts
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/accounts/login-ui/'
 LOGIN_REDIRECT_URL = '/study/'
 
 # Sessions
