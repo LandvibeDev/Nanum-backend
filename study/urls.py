@@ -4,7 +4,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework import routers
 from rest_framework_nested import routers as nested_routers
 
-from study.views import *
+from study.views import StudyViewSet, StudyMemberViewSet, BoardViewSet, study_like_create, study_like_delete
+
 
 # /study :get, post
 # /study/{pk} : get, put, patch, delete

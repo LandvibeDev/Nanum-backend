@@ -6,6 +6,7 @@ import os
 from abstract.models import AbstractBoard, AbstractComment, AbstractFile
 from accounts.models import NanumUser
 from study.models import Study
+from schedule.models import Schedule
 # Create your models here.
 
 
@@ -33,6 +34,7 @@ class HomeWork(AbstractBoard):
     finished_count = models.DateTimeField(default=0, help_text='과제 제출한 스터디원 수')
     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='과제 출제자')
     study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='과제가 속한 스터디')
+    schedule = models.ForeignKey(Schedule, null=True, blank=True, help_text='과제 일정')
 
     class Meta:
         ordering = ('-pk', '-create_date', )

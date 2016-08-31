@@ -31,7 +31,29 @@ from accounts.serializer import *
 class StudyViewSet(viewsets.ModelViewSet):
 
     queryset = Study.objects.all()
-    serializer_class = StudySerializer
+    serializer_class = StudyGetSerializer
+
+    def _get_serializer(self, *args, **kwargs):
+        serializer_class = StudySerializer
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+
+    # override
+    def create(self, request, *args, **kwargs):
+        serializer = self._get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # override
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self._get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
 
 @permission_classes((AllowAny,))
@@ -68,7 +90,7 @@ class StudyMemberViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
         return Response(serializer.data)
 
-# override
+    # override
     def destroy(self, request, *args, **kwargs):
         # study 멤버 수 -1
         study_id = request.POST.__getitem__('study')
@@ -104,7 +126,7 @@ class BoardViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # override ModelViewSet.UpdateModelMixin.update
+    # override Mode lViewSet.UpdateModelMixin.update
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -112,8 +134,6 @@ class BoardViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
-
-
 
 
 # ===================================================
@@ -131,7 +151,7 @@ def study_like_create(request, study_pk=None, format=None):
         # issue?! : 스터디 '가'에 대해 좋아요를 누른 사용자A가 스터디 '가' 페이지를 띄울때, 좋아요 정보를 GET해서 뿌려줘야 하나?
 
         # Like instance 생성할 때 인자로 받은 study_pk 값을 request.POST 에 추가
-        # request.POST.__setitem__('study', study_pk)
+        request.POST.__setitem__('study', study_pk)
         # study 좋아요  수 증가 및 적용
         study = get_object_or_404(Study, pk=study_pk)
         study.like_count += 1

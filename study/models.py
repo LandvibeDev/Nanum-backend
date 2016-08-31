@@ -34,7 +34,7 @@ class Study(models.Model):
     likes = models.ManyToManyField(
         NanumUser,
         blank=True,
-        related_name='likes',
+        related_name='study_likes',
         through='StudyLike', # Study, NanumUser 의 중계 모델 Like
     )
     members = models.ManyToManyField(

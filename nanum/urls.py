@@ -32,7 +32,9 @@ from reference.urls import *
 from verification.urls import *
 from schedule.urls import *
 from study.urls import urlpatterns as study_urls
+from basic_board.urls import urlpatterns as basic_board_urls
 from accounts.views import join, delete_account, info_account, first_page, obtain_auth_token
+
 
 from nanum.settings import base
 
@@ -70,6 +72,7 @@ urlpatterns = [
     url(r'^', include(basic_board_router.urls), name='study-board-basic_board'),
     url(r'^', include(basic_board_comment_router.urls), name='study-board-basic_board-comment'),
     url(r'^', include(basic_board_file_router.urls), name='study-board-basic_board-file'),
+    url(r'^', include(basic_board_urls), name='study-board-basic_board'),
 
     # reference
     url(r'^', include(reference_router.urls), name='study-reference'),

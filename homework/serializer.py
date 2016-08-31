@@ -4,6 +4,7 @@ from rest_framework import serializers
 from homework.models import *
 from accounts.models import NanumUser
 from accounts.serializer import NanumUserSerializer
+from abstract.serializer import __dynamic__init__
 
 
 class HomeWorkSerializer(serializers.ModelSerializer):
