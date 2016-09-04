@@ -6,11 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
-<<<<<<< HEAD
 from django.http import JsonResponse
-=======
 from django.contrib.sessions.models import Session
->>>>>>> dev
 
 from rest_framework import parsers, renderers
 from rest_framework import status, viewsets
