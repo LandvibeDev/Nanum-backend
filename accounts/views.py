@@ -64,29 +64,26 @@ class NanumUserViewSet(viewsets.ModelViewSet):
     serializer_class = NanumUserSerializer
 
     def retrieve(self, request, pk=None):
-        nanum_user = self.get_object()
-        # StudyMember 인스턴스 리스트 얻기
-        study_member = nanum_user.members.all()
-        study_list = []
-        # StudyMember 에서 각 Study 인스턴스의 정보를 사전형으로 만든 뒤 리스트에 추가
-        for sm in study_member:
-            study_dic = {'id': sm.id, 'title': sm.title, 'topic': sm.topic}
-            study_list.append(study_dic)
-
-        # user 정보와 user 와 관련된 study 정보를 하나의 사전형으로 만듬
-        user_study_info = {'study_info': study_list,
-                           'user_info': NanumUserSerializer(nanum_user).data}
-        # 위의 정보를 JSON 형식으로 반환
-        return JsonResponse(user_study_info)
 
         if pk == 'i':
             token = request.META['HTTP_AUTHORIZATION']
             user_by_token = Token.objects.get(key=token[6:]).user
             nanum_user = NanumUser.objects.get(user=user_by_token)
+            # StudyMember 인스턴스 리스트 얻기
+            study_member = nanum_user.members.all()
+            study_list = []
+            # StudyMember 에서 각 Study 인스턴스의 정보를 사전형으로 만든 뒤 리스트에 추가
+            for sm in study_member:
+                study_dic = {'id': sm.id, 'title': sm.title, 'topic': sm.topic}
+                study_list.append(study_dic)
 
+            # user 정보와 user 와 관련된 study 정보를 하나의 사전형으로 만듬
+            user_study_info = {'study_info': study_list,
+                               'user_info': NanumUserSerializer(nanum_user).data}
+            # 위의 정보를 JSON 형식으로 반환
+            return JsonResponse(user_study_info)
 
-
-            return Response(NanumUserSerializer(nanum_user).data)
+            # return Response(NanumUserSerializer(nanum_user).data)
 
         return super(NanumUserViewSet, self).retrieve(request, pk)
 
