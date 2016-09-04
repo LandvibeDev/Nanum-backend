@@ -88,13 +88,14 @@ class ObtainAuthToken(APIView):
 obtain_auth_token = ObtainAuthToken.as_view()
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes((AllowAny,))
 def check_session(request, format=None):
-    if request.method == 'POST':
-        s = Session.objects.filter(pk=request.POST['sessionid'])
+    if request.method == 'GET':
+        # s = Session.objects.filter(pk=request.POST['sessionid'])
+        s = Session.objects.filter(pk=request.session.session_key)
         if s.exists():
             return Response({"Session Success": "Session is exist"}, status=status.HTTP_200_OK)
         else:
-            return Response({"Session Fail": "Session is expire or not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"Session Fail": "Session is expire or not exist"}, status=status.HTTP_401_UNAUTHORIZED)
 
