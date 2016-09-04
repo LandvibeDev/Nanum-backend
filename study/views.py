@@ -152,6 +152,11 @@ def study_like_create(request, study_pk=None, format=None):
 
         # Like instance 생성할 때 인자로 받은 study_pk 값을 request.POST 에 추가
         request.POST.__setitem__('study', study_pk)
+        """
+        request 자체는 immutable 하므로 mutable 한 복제 인스턴스 활용
+        request_copy = request.POST.copy()
+        rerquest_copy.__setitem__('study', study_pk)
+        """
         # study 좋아요  수 증가 및 적용
         study = get_object_or_404(Study, pk=study_pk)
         study.like_count += 1

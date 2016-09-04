@@ -3,3 +3,4 @@ from schedule.models import *
 
 admin.site.register(Schedule)
 admin.site.register(ScheduleTag)
+# admin.site.register(UserSchedule)

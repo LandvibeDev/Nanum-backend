@@ -41,7 +41,7 @@ class VerificationFile(models.Model):
         upload_to=get_verification_file_path,
         help_text='인증 첨부파일'
     )
-    is_checked = models.BooleanField(default='False', help_text='인증여부')
+    is_checked = models.BooleanField(default=False, help_text='인증여부')
     upload_date = models.DateTimeField(auto_now_add=True, help_text='인증 업로드 날짜')
     checked_date = models.DateTimeField(auto_now=True, help_text='인증 확인 날짜')
     rank = models.IntegerField(default='0', help_text='인증 순위(스터디장이 결정)')

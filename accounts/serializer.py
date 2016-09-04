@@ -8,6 +8,7 @@ from rest_framework import serializers
 
 from accounts.models import NanumUser
 
+
 def __dynamic__init__(self, *args, **kwargs):
     """
     참고 링크 - http://www.django-rest-framework.org/api-guide/serializers/#dynamically-modifying-fields
@@ -52,7 +53,7 @@ class NanumUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NanumUser
-        fields = ('user', 'birthday', 'profile_image')
+        fields = ('user', 'birthday', 'profile_image', 'members')
 
 
 class NanumCreateUserSerializer(serializers.ModelSerializer):
@@ -62,4 +63,3 @@ class NanumCreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = NanumUser
         fields = ('birthday', 'profile_image')
-

@@ -51,3 +51,15 @@ class ScheduleGetSerializer(serializers.ModelSerializer):
         model = Schedule
         fields = ('id', 'title', 'start_date', 'end_date', 'description', 'study', 'is_oneday', 'color', 'linked_type'
                   , 'schedule_tag_set', 'user', 'board')
+
+
+# class UserScheduleSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserSchedule
+#         fields = ('id', 'title', 'start_date', 'end_date', 'description', 'study', 'is_oneday', 'color', 'linked_type'
+#                   , 'schedule_tag_set', 'user')
+#
+#
+# class UserScheduleGetSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserSchedule

@@ -14,20 +14,21 @@ class Schedule(models.Model):
     """
     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='일정을 생성한 사용자')
     board = models.ForeignKey(Board, null=True, blank=True, on_delete=models.CASCADE, help_text='일정과 관련된 게시판')
+    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디')
     title = models.CharField(null=False, blank=False, default='제목없는 일정', max_length=200, help_text='일정 제목')
     start_date = models.DateTimeField(null=False, blank=False, auto_now_add=True, help_text='일정 시작일')
     end_date = models.DateTimeField(null=False, blank=False, auto_now_add=True, help_text='일정 종료일')
     description = models.TextField(null=True, blank=True, help_text='일정 설명')
-    study = models.ForeignKey(Study, null=True, blank=True, on_delete=models.CASCADE, help_text='스터디')
     is_oneday = models.BooleanField(null=False, blank=False, default=False, help_text='종일 일정 여부')
-    color = models.CharField(null=True, blank=True, max_length=200, default='#FFFFFF', help_text='일정 색상')
+    color = models.CharField(null=True, blank=True, max_length=50, default='#FFFFFF', help_text='일정 색상')
+    location = models.CharField(null=True, blank=True, max_length=100, help_text='일정 장소')
     linked_type = models.IntegerField(default=-1, help_text='일정과 관련된 글의 종류(과제, 자료 등)')
 
     class Meta:
         ordering = ('-pk', '-start_date', )
 
     def __str__(self):
-        return 'calendar_' + str(self.id)
+        return 'schedule_' + str(self.id)
 
 
 class ScheduleTag(models.Model):
@@ -43,3 +44,23 @@ class ScheduleTag(models.Model):
 
     def __str__(self):
         return 'schedule_tag_' + str(self.id)
+
+
+# class UserSchedule(models.Model):
+#     """
+#     사용자 개인 일정 정보
+#     """
+#     user = models.ForeignKey(NanumUser, null=True, blank=True, on_delete=models.CASCADE, help_text='일정을 생성한 사용자')
+#     title = models.CharField(null=False, blank=False, default='제목없는 일정', max_length=200, help_text='일정 제목')
+#     start_date = models.DateTimeField(null=False, blank=False, auto_now_add=True, help_text='일정 시작일')
+#     end_date = models.DateTimeField(null=False, blank=False, auto_now_add=True, help_text='일정 종료일')
+#     description = models.TextField(null=True, blank=True, help_text='일정 설명')
+#     is_oneday = models.BooleanField(null=False, blank=False, default=False, help_text='종일 일정 여부')
+#     color = models.CharField(null=True, blank=True, max_length=50, default='#FFFFFF', help_text='일정 색상')
+#     location = models.CharField(null=True, blank=True, max_length=100, help_text='일정 장소')
+#
+#     class Meta:
+#         ordering = ('-pk', '-start_date',)
+#
+#     def __str__(self):
+#         return 'user_schedule_' + str(self.id)

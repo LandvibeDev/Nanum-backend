@@ -15,7 +15,7 @@ class BasicBoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = BasicBoard
         fields = ('id', 'title', 'contents', 'count', 'comment_count', 'create_date', 'update_date', 'like_count',
-                  'user', 'board', 'likes')
+                  'user', 'board')
 
 
 class BasicBoardCommentSerializer(serializers.ModelSerializer):
@@ -62,27 +62,6 @@ class BasicBoardFileGetSerializer(serializers.ModelSerializer):
                   'basic_board', 'attached_file')
 
 
-class BasicBoardLikeSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        __dynamic__init__(self, *args, **kwargs)
-
-    class Meta:
-        model = BasicBoardLike
-        fields = ('basic_board', 'user', 'create_date')
-
-
-class BasicBoardLikeGetSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        __dynamic__init__(self, *args, **kwargs)
-
-    # basic_board = BasicBoardSerializer(read_only=True)
-    # user = NanumUserSerializer(read_only=True)
-
-    class Meta:
-        model = BasicBoardLike
-        fields = ('basic_board', 'user', 'create_date')
-
-
 class BasicBoardGetSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         __dynamic__init__(self, *args, **kwargs)
@@ -94,4 +73,4 @@ class BasicBoardGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = BasicBoard
         fields = ('id', 'title', 'contents', 'count', 'comment_count', 'create_date', 'update_date', 'like_count',
-                  'user', 'board', 'likes')
+                  'user', 'board')
