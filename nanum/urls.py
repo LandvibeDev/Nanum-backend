@@ -32,7 +32,7 @@ from verification.urls import *
 from schedule.urls import *
 from study.urls import urlpatterns as study_urls
 from basic_board.urls import urlpatterns as basic_board_urls
-from accounts.views import join, delete_account, info_account, first_page, obtain_auth_token
+from accounts.views import join, delete_account, info_account, first_page, obtain_auth_token,check_session
 
 
 from nanum.settings import base
@@ -59,6 +59,7 @@ urlpatterns = [
     url(r'^accounts/join/$', join, name='join'),
     url(r'^accounts/delete/(?P<username>[\w]+)$', delete_account, name='delete'),
     url(r'^accounts/info/(?P<user_pk>[\w]+)$', info_account, name='info'),
+    url(r'session-check/$', check_session, name='check-session'),
 
     # study - study, board, member, like
     url(r'^', include(study_router.urls), name='study'),

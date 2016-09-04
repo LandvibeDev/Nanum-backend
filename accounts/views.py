@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.sessions.models import Session
 
 from rest_framework import parsers, renderers
 from rest_framework import status, viewsets
@@ -82,6 +83,18 @@ class ObtainAuthToken(APIView):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         auth_login(request, user) # save session
-        return Response({'token': token.key})
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 obtain_auth_token = ObtainAuthToken.as_view()
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def check_session(request, format=None):
+    if request.method == 'POST':
+        s = Session.objects.filter(pk=request.POST['sessionid'])
+        if s.exists():
+            return Response({"Session Success": "Session is exist"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"Session Fail": "Session is expire or not exist"}, status=status.HTTP_404_NOT_FOUND)
+
