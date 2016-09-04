@@ -83,17 +83,17 @@ class ObtainAuthToken(APIView):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         auth_login(request, user) # save session
-        return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({'token': token.key,'sessionid': request.session.session_key}, status=status.HTTP_200_OK)
 
 obtain_auth_token = ObtainAuthToken.as_view()
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes((AllowAny,))
 def check_session(request, format=None):
-    if request.method == 'GET':
-        # s = Session.objects.filter(pk=request.POST['sessionid'])
-        s = Session.objects.filter(pk=request.session.session_key)
+    if request.method == 'POST':
+        s = Session.objects.filter(pk=request.POST['sessionid'])
+        #s = Session.objects.filter(pk=request.session.session_key)
         if s.exists():
             return Response({"Session Success": "Session is exist"}, status=status.HTTP_200_OK)
         else:
