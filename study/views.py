@@ -139,22 +139,20 @@ class BoardViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
-
         logging.warning("queryset : " + str(queryset))
         logging.warning("request : " + str(request.data))
         logging.warning("*args : " + str(args))
         logging.warning("kwargs : " + str(kwargs))
+
         page = self.paginate_queryset(queryset)
-
-            return self.get_paginated_response(serializer.data)
-            serializer = self.get_serializer(page, many=True)
         if page is not None:
-        logging.warning("kwargs.get('study_pk') : " + str(kwargs.get('study_pk')))
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = self.get_serializer(queryset, many=True)
-
-
-
         return Response(serializer.data)
+
+    
 # ===================================================
 # ============== StudyLike ==============
 # ===================================================
