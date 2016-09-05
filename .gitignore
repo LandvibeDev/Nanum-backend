@@ -13,3 +13,13 @@ tests/.coverage
 build/
 tests/report/
 uploaded_files/
+
+study/migrations
+basic_board/migrations
+homework/migrations
+nanum/migrations
+schedule/migrations
+reference/migrations
+accounts/migrations
+verification/migrations
+
