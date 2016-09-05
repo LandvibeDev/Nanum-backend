@@ -118,7 +118,7 @@ class BoardViewSet(viewsets.ModelViewSet):
         kwargs['context'] = self.get_serializer_context()
         return serializer_class(*args, **kwargs)
 
-    # override ModelViewSet.CreateModelMixin.create
+    # override
     def create(self, request, *args, **kwargs):
         serializer = self._get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -126,7 +126,7 @@ class BoardViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # override Mode lViewSet.UpdateModelMixin.update
+    # override
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -135,7 +135,26 @@ class BoardViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
         return Response(serializer.data)
 
+    # override
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
 
+
+        logging.warning("queryset : " + str(queryset))
+        logging.warning("request : " + str(request.data))
+        logging.warning("*args : " + str(args))
+        logging.warning("kwargs : " + str(kwargs))
+        page = self.paginate_queryset(queryset)
+
+            return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(page, many=True)
+        if page is not None:
+        logging.warning("kwargs.get('study_pk') : " + str(kwargs.get('study_pk')))
+        serializer = self.get_serializer(queryset, many=True)
+
+
+
+        return Response(serializer.data)
 # ===================================================
 # ============== StudyLike ==============
 # ===================================================
